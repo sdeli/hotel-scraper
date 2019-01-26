@@ -1,0 +1,6 @@
+node_modules/
+app/assets/
+app/.env.default
+app/config
+.vscode
+test

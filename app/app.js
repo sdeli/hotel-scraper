@@ -1,0 +1,43 @@
+const path = require('path');
+let moduleLinker = require('./widgets/modules-linker/module-linker.js');
+
+let pathToWidgets = `${__dirname}/widgets`;
+let pathToModels = `${__dirname}/models`;
+let pathToConfig = `${__dirname}/config`;
+let pathToNodeModules = path.join(`${__dirname}/../node_modules`);
+
+moduleLinker.configure({
+    MODULES_FOLDER_NAME : 'modules',
+    NODE_MODULES_FOLDER_NAME : 'node_modules'
+});
+
+moduleLinker = moduleLinker.getInst();
+moduleLinker(false, pathToWidgets, pathToNodeModules);
+moduleLinker(false, pathToModels, pathToNodeModules);
+moduleLinker(false, pathToConfig, pathToNodeModules);
+
+const dotenv = require('dotenv');
+
+let err = dotenv.config({ path: './.env.default' });
+let env = process.env;
+
+const hotelScraper = require('./services/hotel-scraper/hotel-scraper.js'); 
+hotelScraper();
+// const ipAndPortFeeder = require('./services/ip-and-port-feeder/server.js'); 
+// ipAndPortFeeder();
+/*
+for (let i = 0; i <= 100; i++) {
+    makeRequest(i);
+}
+function makeRequest(i) {
+    request('http://localhost:8080/ip-port', function (error, response, body) {
+        try {
+            body = JSON.parse(body)
+        } catch(e) {
+            console.log(e);
+            console.log(body);
+        }
+        console.log('body ' + i + '---' + body.ip + '---' + body.releaseTime + '---' + body.currLinuxTime + '---' + body.lastTimeInUse);  
+        console.log('END -----------------' + body.majom);
+    });
+}*/
