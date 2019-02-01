@@ -1,13 +1,14 @@
 drop database if exists hotel_data_db;
 create database hotel_data_db
-CHARACTER SET latin2 COLLATE latin2_hungarian_ci;
+CHARACTER SET latin1 COLLATE latin1_german1_ci;
 
 use hotel_data_db;
 
+# ==== CREATE TABLES ====
 drop table if exists hotels;
 create table hotels (
 	hotel_id char(18),
-	hotel_name varchar(70) not null unique,
+	hotel_name varchar(100) not null unique,
     avatar_shortened_link char(20) default null,
     batch_id char(19) not null,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -26,7 +27,7 @@ drop table if exists hotel_webistes;
 create table hotel_webistes (
 	website_id int auto_increment,
 	website_url VARCHAR(512) not null unique,
-    batch_id char(19) not null unique,
+    batch_id char(19) not null,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     primary key (website_id)
 );
@@ -55,7 +56,7 @@ create table emails_of_websites (
     email_id int
 );
 
-# ==== Adding Foreign Keys ====
+# ==== ADDING FOREIGN KEYS ====
 alter table hotel_addr
 add constraint fk_hotel_id_in_hotel_addr
 foreign key (hotel_id)
@@ -85,3 +86,5 @@ add constraint fk_email_id_in_emails_of_websites
 foreign key (email_id) 
 references emails(email_id) 
 on delete cascade;
+
+# ==== ADDING ADDITIONAL INDEXES ====

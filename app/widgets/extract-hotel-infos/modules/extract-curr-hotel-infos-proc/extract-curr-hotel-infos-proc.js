@@ -22,7 +22,7 @@ module.exports = ((params) => {
             hotelInfos.region =  hotelInfos.fullAddr.replace(/(.*,\s\d+\s)(.*)(,.*)/, '$2');
             hotelInfos.country = COUNTRY;
             hotelInfos.batchId = batchId;
-
+            // console.log('log')
             resolve(hotelInfos);
         });
     }

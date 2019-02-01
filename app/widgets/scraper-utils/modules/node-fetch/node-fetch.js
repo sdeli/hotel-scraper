@@ -1,5 +1,5 @@
 const config = require('config');
-const rp = require('request-promise');
+const fetch = require('node-fetch');
 var reqCount = 0;
 const HEADERS = config.headers.submitSearchReqHeaders;
 
@@ -7,23 +7,24 @@ module.exports = ((link) => {
     let failedCallCount  = 0;
 
     return new Promise((resolve, reject) => {
-        makeRequest(resolve, reject, link);
+        nodeFetch(resolve, reject, link);
     });
     
-    function makeRequest(resolve, reject, link) {
+    function nodeFetch(resolve, reject, link) {
         reqCount++
         var options = {
-            uri: link,
-            headers : HEADERS,
-            gzip : true
+            compress: true,
         };
         
-        rp(options)
+        fetch(link)
+        .then(res => res.text())
         .then(response => {
             resolve(response)
         })
         .catch(err => {
-            reject(err)
+            console.log('reqcount: ' + reqCount);
+            process.stdout.write('request agian: ' + link)
+            doRequestAgainOnErr(err, resolve, reject, link);
         });
     }
     
@@ -33,7 +34,7 @@ module.exports = ((link) => {
             reject(err)
         } else {
             failedCallCount++;
-            makeRequest(resolve, reject, link)
+            nodeFetch(resolve, reject, link)
         } 
     }
 });

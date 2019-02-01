@@ -1,0 +1,101 @@
+
+
+log: 2019-01-31_12-07-45
+{
+  "code": "ER_TRUNCATED_WRONG_VALUE_FOR_FIELD",
+  "errno": 1366,
+  "sqlMessage": "Incorrect string value: '\\xC4\\x8De-Tr...' for column 'hotelName' at row 1",
+  "sqlState": "HY000",
+  "index": 15,
+  "sql": "set autocommit = 0;\nSTART TRANSACTION;\ncall insertHotelInfos('18nt2lpjrkkryzf', 'Apartment Superb apartment on Danube channel 9 district', 'Austria', 'Vienna', 'Treustraße 10/6, 20. Brigittenau, 1200 Vienna, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkkryzf', 'Hotel Hotel Garni Waldschlössl', 'Austria', 'Ischgl', 'Innerer Kapellenweg 3, 6561 Ischgl, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkkrz00', 'Hotel Mercure Hotel Raphael Wien', 'Austria', 'Vienna', 'Wallgasse 23, 06. Mariahilf, 1060 Vienna, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkkrzcq', 'Hostel Kolping Campus Krems', 'Austria', 'Krems an der Donau', 'Alauntalstraße 95 und 97, 3500 Krems an der Donau, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkkrzd3', 'Condo Hotel Appartements Zur Barbara', 'Austria', 'Schladming', 'Coburgstraße 168, 8970 Schladming, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkkrzjb', 'Apartment Vienna Prater Apartment', 'Austria', 'Vienna', 'Kleine Stadtgutgasse 12/10, 02. Leopoldstadt, 1020 Vienna, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkkrzrb', 'Bed and Breakfast Gästehaus Watschinger', 'Austria', 'Bad Wimsbach-Neydharting', 'Au41, 4654 Bad Wimsbach-Neydharting, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkkrzuv', 'Hotel Narzissen Vital Resort Bad Aussee', 'Austria', 'Bad Aussee', 'Pötschenstraße 172, 8990 Bad Aussee, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkkrztz', 'Hotel Trans World Hotel Donauwelle', 'Austria', 'Linz', 'Am Winterhafen 13, Kaplanhof, 4020 Linz, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkks04h', 'Inn Gasthaus-Gostišče-Trattoria Ogris', 'Austria', 'Ludmannsdorf', 'Ludmannsdorf 13, 9072 Ludmannsdorf, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkks07d', 'Apartment Appartement Veronika', 'Austria', 'Öblarn', 'Öblarn 216, 8960 Öblarn, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkks0b4', 'Apartment Almlodge Westendorf', 'Austria', 'Westendorf', 'Nachtsöllberg 11, 6363 Westendorf, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkks0gj', 'Hotel Strasserwirt - Herrenansitz zu Tirol', 'Austria', 'Strassen', 'Dorfstraße 28, 9918 Strassen, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkks0jn', 'Bed and Breakfast Win Budget B&B', 'Austria', 'Wiener Neustadt', 'Wiener Straße-Werkstraße 113/2.4 2.5, 2700 Wiener Neustadt, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkks0ln', 'Vacation Home Landhaus Litschau', 'Austria', 'Litschau', 'Schlag 39, 3874 Litschau, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkks0y6', 'Hotel Hotel Adler Garni', 'Austria', 'Hirschegg', 'Walserstraße 251, 6992 Hirschegg, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkks0yx', 'Apartment Mönchsbergapartments', 'Austria', 'Salzburg', 'Gstättengasse 9, Altstadt, 5020 Salzburg, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkks0zd', 'Guesthouse CH-Budget Center Rooms', 'Austria', 'Vienna', 'Börsegasse 1, 01. Innere Stadt, 1010 Vienna, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkks1a0', 'Condo Hotel MONDI-HOLIDAY Seeblickhotel Grundlsee', 'Austria', 'Grundlsee', 'Archkogl 31, 8993 Grundlsee, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkks1af', 'Apartment Vienna Stay Apartments Prater 1020', 'Austria', 'Vienna', 'Heinestrasse 40, 02. Leopoldstadt, 1020 Vienna, Austria', '2019-01-31_12-05-47');\nCOMMIT;\nset autocommit = 1;"
+}===========================
+
+log: 2019-01-31_12-08-13
+{
+  "code": "ER_TRUNCATED_WRONG_VALUE_FOR_FIELD",
+  "errno": 1366,
+  "sqlMessage": "Incorrect string value: '\\xE2\\x80\\xA8Ans...' for column 'Region' at row 1",
+  "sqlState": "HY000",
+  "index": 17,
+  "sql": "set autocommit = 0;\nSTART TRANSACTION;\ncall insertHotelInfos('18nt2lcjrkkskp9', 'Hotel Parkhotel Krems', 'Austria', 'Krems an der Donau', 'Edmund-Hofbauer-Straße 19, 3500 Krems an der Donau, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkkskp4', 'Hotel Hotel Klinglhuber', 'Austria', 'Krems an der Donau', 'Hohensteinstrasse 5, 3500 Krems an der Donau, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkkskpn', 'Apartment Vienna\\'s Place Apartment Karlsplatz', 'Austria', 'Vienna', 'Various Addresses in Vienna, 04. Wieden, 1040 Vienna, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkksl1h', 'Hotel Hotel Royal', 'Austria', 'Vienna', 'Singerstraße 3, 01. Innere Stadt, 1010 Vienna, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkksl0y', 'Hotel Phoenix7', 'Austria', 'Mödling', 'Neudorfer Straße 7, 2340 Mödling, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkksl1t', 'Apartment Hornhaus', 'Austria', 'Kitzbühel', 'Hornweg 4, 6370 Kitzbühel, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkksleh', 'Hotel Travel Charme Bergresort Werfenweng', 'Austria', 'Werfenweng', 'Weng 195-198, 5453 Werfenweng, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkkslgo', 'Guesthouse Garni Montana', 'Austria', 'Kappl', 'Wiese 423, 6555 Kappl, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkkslg9', 'Hotel Hotel-Garni Schernthaner', 'Austria', 'Sankt Gilgen', 'Schwarzenbrunnerstraße 4, 5340 Sankt Gilgen, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkkslvs', 'Hotel Steigenberger Hotel and Spa', 'Austria', 'Krems an der Donau', 'Am Goldberg 2, 3500 Krems an der Donau, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkksluz', 'Hotel Anthony´s Alpin Hotel Garni', 'Austria', 'Lech am Arlberg', 'Dorf 256, 6764 Lech am Arlberg, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkkslxc', 'Hotel 7 Days Premium Hotel Linz-Ansfelden', 'Austria', 'Ansfeldnerstraße 1 Ansfelden', 'Ansfeldnerstraße 1 , 4052 Ansfelden, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkksm7h', 'Apartment Erzberg Alpin Resort by Alps Residence', 'Austria', 'Eisenerz', 'Petergstammstraße 1, 8790 Eisenerz, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkksm9e', 'Hotel Das Alpenhaus Kaprun', 'Austria', 'Kaprun', 'Schlossstraße 2, 5710 Kaprun, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkksmaj', 'Apartment Appartements Edelraute', 'Austria', 'Hohentauern', 'Feriensiedlung 189, 8785 Hohentauern, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkksmnw', 'Guesthouse Gasthof Bergfried', 'Austria', 'Hallstatt', 'Echerntalweg 3, 4830 Hallstatt, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkksmrl', 'Apartment Apart Karin', 'Austria', 'Prutz', '60 Pontlatzstraße, 6522 Prutz, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkksmqm', 'Apartment Familienparadies Wolfgangbauer', 'Austria', 'Winkl', 'Winkl 13, 9844 Winkl, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkksmvl', 'Motel Motel 267', 'Austria', 'Sankt Pölten', 'Stifterstrasse 1, 3100 Sankt Pölten, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkksn21', 'Hotel Hotel Gösser Bräu', 'Austria', 'Wels', 'Kaiser-Josef-Platz 27, 4600 Wels, Austria', '2019-01-31_12-05-47');\nCOMMIT;\nset autocommit = 1;"
+}===========================
+
+log: 2019-01-31_12-08-25
+{
+  "code": "ER_DATA_TOO_LONG",
+  "errno": 1406,
+  "sqlMessage": "Data too long for column 'hotelName' at row 1",
+  "sqlState": "22001",
+  "index": 22,
+  "sql": "set autocommit = 0;\nSTART TRANSACTION;\ncall insertHotelInfos('18nt2lcjrkkstwq', 'Guesthouse Pension Lasshofer', 'Austria', 'Mauterndorf', 'St. Gertrauden 271, 5570 Mauterndorf, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkkstwm', 'Farm Stay Berggasthof Baumannwiesköpfl', 'Austria', 'Fügenberg', 'Schlittererberg 4, 6264 Fügenberg, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkkstwz', 'Hotel Spa Resort Styria- ADULTS ONLY', 'Austria', 'Bad Waltersdorf', 'Buchgreithweg 351, 8271 Bad Waltersdorf, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkksu7a', 'Hotel Hotel Christina', 'Austria', 'Seefeld in Tirol', 'Reitherspitzstraße 415, 6100 Seefeld in Tirol, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkksuba', 'Hotel Best Western Plus Amedia Graz', 'Austria', 'Graz', 'Conrad-von-Hötzendorf-Straße 60, 8010 Graz, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkksubw', 'Apartment TOP LOCATION VIENNA MARIAHILF 9', 'Austria', 'Vienna', '22 Windmühlgasse, 06. Mariahilf, 1060 Vienna, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkksuju', 'Hotel OEKOTEL Graz Airport', 'Austria', 'Kalsdorf bei Graz', 'Forsterstrasse 70, 8401 Kalsdorf bei Graz, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkksulj', 'Hotel Boutiquehotel Das Tyrol', 'Austria', 'Vienna', 'Mariahilfer Straße 15, 06. Mariahilf, 1060 Vienna, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkksuqo', 'Hotel Hotel Both', 'Austria', 'Schruns', 'Auweg 9, 6780 Schruns, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkksuxr', 'Hotel Engel', 'Austria', 'Feldkirch', 'Feldkircher Straße 18, 6800 Feldkirch, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkksuzq', 'Apartment Belle Kitz Central', 'Austria', 'Kitzbühel', '7 Wehrgasse, 6370 Kitzbühel, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkksv3q', 'Hotel Hotel Schöne Aussicht', 'Austria', 'Salzburg', 'Heuberg 3, Gnigl, 5023 Salzburg, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkksvbn', 'Guesthouse Pension Babenberger', 'Austria', 'Melk', 'Linzer Straße 18, 3390 Melk, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkksvbw', 'Hotel Mountain and Soul Lifestyle Hotel', 'Austria', 'Ramsau im Zillertal', 'Ramsau 425, 6284 Ramsau im Zillertal, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkksvds', 'Hotel Hotel Restaurant Das Leo', 'Austria', 'Kalsdorf bei Graz', '5 Hauptstrasse, 8401 Kalsdorf bei Graz, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkksvnh', 'Hotel Hotel Garni Helvetia', 'Austria', 'Ischgl', 'Persuttweg 8, 6561 Ischgl, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkksvrx', 'Apartment checkVIENNA - Blindengasse', 'Austria', 'Vienna', 'Blindengasse 39, 08. Josefstadt, 1080 Vienna, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkksvwk', 'Hotel Falkensteiner Schlosshotel Velden – The Leading Hotels of the World', 'Austria', 'Velden am Wörthersee', 'Schlosspark 1, 9220 Velden am Wörthersee, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkksvzy', 'Condo Hotel Bachgut - Das Resort am Berg', 'Austria', 'Saalbach-Hinterglemm', 'Hasenbachweg 144, Hinterglemm, 5754 Saalbach-Hinterglemm, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkksw6m', 'Chalet Chalet Valerie by Kitz-Chalets', 'Austria', 'Reith bei Kitzbühel', 'Kitzbüheler Straße 79, 6370 Reith bei Kitzbühel, Austria', '2019-01-31_12-05-47');\nCOMMIT;\nset autocommit = 1;"
+}===========================
+
+log: 2019-01-31_12-10-07
+{
+  "code": "ER_DATA_TOO_LONG",
+  "errno": 1406,
+  "sqlMessage": "Data too long for column 'hotelName' at row 1",
+  "sqlState": "22001",
+  "index": 29,
+  "sql": "set autocommit = 0;\nSTART TRANSACTION;\ncall insertHotelInfos('18nt2lijrkkv0w2', 'Apartment Exclusive Apartment Museumsquartier', 'Austria', 'Vienna', 'Faßziehergasse 7, 07. Neubau, 1070 Vienna, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkkv0w9', 'Condo Hotel LiV’iN Residence by Fleming’s Wien', 'Austria', 'Vienna', 'Kenyongasse 17, 07. Neubau, 1070 Vienna, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkkv0w7', 'Apartment Haus Christina - Romantik Suite', 'Austria', 'Bürs', '28 Judavollastraße, 6706 Bürs, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkkv14r', 'Apartment Alte Donau meets Vienna International Center', 'Austria', 'Vienna', 'Wagramer Straße 38, TOP 7, 22. Donaustadt, 1220 Vienna, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkkv14v', 'Hotel OEKOTEL Traiskirchen', 'Austria', 'Traiskirchen', 'Hochmühlstrasse 5., 2514 Traiskirchen, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkkv18l', 'Hotel Grand Tirolia Kitzbühel', 'Austria', 'Kitzbühel', 'Eichenheim 10, 6370 Kitzbühel, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkkv1f1', 'Hotel ARCOTEL Donauzentrum', 'Austria', 'Vienna', 'Wagramer Strasse 83-85, 22. Donaustadt, 1220 Vienna, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkkv1es', 'Apartment Ferienwohnung Blick auf die Buchensteinerwand', 'Austria', 'Hochfilzen', 'MAGNESITSTRASSE 12, 6395 Hochfilzen, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkkv1sw', 'Hotel Hotel Sailer', 'Austria', 'Innsbruck', 'Adamgasse 8, Innenstadt, 6020 Innsbruck, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkkv1tn', 'Hotel Hotel Marc Aurel', 'Austria', 'Petronell', 'Hauptstraße 10, 2404 Petronell, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkkv1su', 'Hotel Imperial Riding School Renaissance Vienna Hotel', 'Austria', 'Vienna', 'Ungargasse 60, 03. Landstraße, 1030 Vienna, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkkv26a', 'Apartment Ferienwohnungen & Weingut Kroiss Silvia', 'Austria', 'Illmitz', 'Quergasse 13, 7142 Illmitz, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkkv260', 'Apartment LEHNER Panorama Alpensuiten', 'Austria', 'Berwang', 'Berwang 168, 6622 Berwang, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkkv2bn', 'Hotel Schlosstaverne', 'Austria', 'Braunau am Inn', '6a Wertheimerplatz, 5282 Braunau am Inn, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkkv2gq', 'Condo Hotel Das Heimsitz', 'Austria', 'Brixen im Thale', 'Liftweg 2a-f, 6364 Brixen im Thale, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkkv2it', 'Guesthouse Romantikpension Villa Anna', 'Austria', 'Bad Gastein', 'Reitlpromenade 1, 5640 Bad Gastein, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkkv2mm', 'Bed and Breakfast Pension Kral', 'Austria', 'Rust', 'Ödenburgerstrasse  25, 7071 Rust, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lcjrkkv2tg', 'Hotel Bergland Hotel', 'Austria', 'Salzburg', 'Rupertgasse 15, Schallmoos, 5020 Salzburg, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lijrkkv2vr', 'Hotel Stockinggut by AvenidA Hotel & Residences Leogang by Alpin Rentals', 'Austria', 'Leogang', 'Rain 5, 5771 Leogang, Austria', '2019-01-31_12-05-47');\ncall insertHotelInfos('18nt2lpjrkkv2x8', 'Guesthouse Appartmenthaus Kern', 'Austria', 'Schlägl', '1 Mühltal, 4160 Schlägl, Austria', '2019-01-31_12-05-47');\nCOMMIT;\nset autocommit = 1;"
+}===========================
+
+log: 2019-01-31_18-47-29
+{
+  "code": "ER_EMPTY_QUERY",
+  "errno": 1065,
+  "sqlMessage": "Query was empty",
+  "sqlState": "42000",
+  "index": 0,
+  "sql": ""
+}===========================
+
+log: 2019-01-31_18-47-29
+{
+  "code": "ER_EMPTY_QUERY",
+  "errno": 1065,
+  "sqlMessage": "Query was empty",
+  "sqlState": "42000",
+  "index": 0,
+  "sql": ""
+}===========================
+
+log: 2019-01-31_18-47-30
+{
+  "code": "ER_EMPTY_QUERY",
+  "errno": 1065,
+  "sqlMessage": "Query was empty",
+  "sqlState": "42000",
+  "index": 0,
+  "sql": ""
+}===========================
+
+log: 2019-01-31_18-53-31
+{
+  "code": "ER_EMPTY_QUERY",
+  "errno": 1065,
+  "sqlMessage": "Query was empty",
+  "sqlState": "42000",
+  "index": 0,
+  "sql": ""
+}===========================
+
+log: 2019-01-31_18-53-35
+{
+  "code": "ER_EMPTY_QUERY",
+  "errno": 1065,
+  "sqlMessage": "Query was empty",
+  "sqlState": "42000",
+  "index": 0,
+  "sql": ""
+}===========================
+
+log: 2019-01-31_18-53-36
+{
+  "code": "ER_EMPTY_QUERY",
+  "errno": 1065,
+  "sqlMessage": "Query was empty",
+  "sqlState": "42000",
+  "index": 0,
+  "sql": ""
+}===========================

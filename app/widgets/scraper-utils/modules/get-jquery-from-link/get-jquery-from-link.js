@@ -2,7 +2,7 @@ const config = require('config');
 const cheerio = require('cheerio');
 const rp = require('request-promise');
 
-const HEADERS = config.general.submitSearchReqHeaders;
+const HEADERS = config.headers.submitSearchReqHeaders;
 
 module.exports = getJqueryFromLink
 

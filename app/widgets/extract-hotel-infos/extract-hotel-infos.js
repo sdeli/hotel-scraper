@@ -8,28 +8,30 @@ const {readCsvIntoArr, makeRequest} = require('widgets/scraper-utils');
 const HOTEL_PAGE_LINKS_FOLDER__PATH = config.pathes.hotelSubPageLinks,
     EXTRACT_HOTEL_INFOS_PROCESS__PATH = __dirname + '/modules/extract-curr-hotel-infos-proc/extract-curr-hotel-infos-proc.js',
     HOTEL_NAME__SEL = config.selectors.hotelPage.hotelName,
-    HOTEL_ADDR__SEL = config.selectors.hotelPage.hotelAddr;
-    COUNTRY = config.general.searchedCountry;
+    HOTEL_ADDR__SEL = config.selectors.hotelPage.hotelAddr,
+    COUNTRY = config.general.searchedCountry,
+    CATCHER_ERR_EVENT__TERM = config.general.catchedErrEventsName;
 
 module.exports = extractHotelInfos
 
 async function extractHotelInfos(batchId) {
     let hotelPageLinksArr = getHotelPageLinks(batchId);
     
-    for (let i = 0; i < hotelPageLinksArr.length; i += 10) {
+    for (let i = 0; i < hotelPageLinksArr.length; i += 20) {
         try {
-            let currHotelPageLinksArr = hotelPageLinksArr.slice(i, i + 10);
-            await extract10HotelPagesForInfos(currHotelPageLinksArr, i, batchId)
+            await extract20HotelPagesForInfos(hotelPageLinksArr, i, batchId)
         } catch (err) {
             console.log('err handling');
             console.log(err);
         }
-        console.log(`next ${i} - ${i + 10} =================`);
+
+        console.log(`next ${i} - ${i + 20} =================`);
     }    
 }
 
-function extract10HotelPagesForInfos(hotelPageLinksArr, i, batchId) {
-    let getHotelPgHtmlsPromisesArr = hotelPageLinksArr.map(hotelPageLink => {
+function extract20HotelPagesForInfos(hotelPageLinksArr, i, batchId) {
+    let currHotelPageLinksArr = hotelPageLinksArr.slice(i, i + 20);
+    let getHotelPgHtmlsPromisesArr = currHotelPageLinksArr.map(hotelPageLink => {
         return makeRequest(hotelPageLink);
     });
 
@@ -39,20 +41,17 @@ function extract10HotelPagesForInfos(hotelPageLinksArr, i, batchId) {
             return getHotelInfosObjs(hotelPgHtmlsArr, batchId)
         })
         .then((hotelInfosArr) => {
-            hotelsModel.hotelInfosFromBookingIntoDb(hotelInfosArr);
+            return hotelsModel.hotelInfosFromBookingIntoDb(hotelInfosArr);
         })
         .then(() => {
             resolve();
         })
         .catch(err => {
-            console.log('error handling');
+            console.log(err);
+            process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
             reject(err);
         });
     });
-}
-
-function extractAllHotelPagesBy10() {
-
 }
 
 function getHotelPageLinks(batchId) {

@@ -7,7 +7,7 @@ const uniqid = require('uniqid');
 
 const childProcessRunnerFilePath = __dirname + '/modules/child-process/child-process.js';
 
-let maxConcurrency = CPU_COUNT - 1; // leave one core for the main thread
+let maxConcurrency = 3/*CPU_COUNT - 1;*/ // leave one core for the main thread
 
 class TaskQueue {
     constructor(maxConcurrencyArg = maxConcurrency) {
@@ -16,7 +16,7 @@ class TaskQueue {
         this.tasks = [];
         this.callBacks = [];
         this.freeChildProc = [];
-        
+        this.taskCounter = 0;
         this.obeserver.on('execute-task', () => {
             let areFreeChildProcToRunTask = this.freeChildProc.length > 0;
             let areDueTasks = this.tasks.length > 0;
@@ -39,17 +39,19 @@ class TaskQueue {
         this.callBacks.push({taskId, cb, cbsParamsArr})
         let childProc = this.freeChildProc.shift();
         
+        console.log('executed task count: ' + this.taskCounter);
+        this.taskCounter++;
         childProc.send({taskId, tasksFilePath, taskParamsArr});
     }
     
     initiateWorkerThreads() {
         for (let i = 0; i < maxConcurrency; i++) {
-            let childProc = this.initiateWorkerThread();
+            let childProc = this.initiateWorkerThread(i);
             this.freeChildProc.push(childProc);  
         }
     }
     
-    initiateWorkerThread() {
+    initiateWorkerThread(processId) {
         let program = "/home/sandor/.nvm/versions/node/v11.7.0/bin/node"
         let options = {
             stdio: [ 'pipe', 'pipe', 'pipe', 'ipc' ]
@@ -71,32 +73,36 @@ class TaskQueue {
             
             let taskExecutedWithErr = msg.err && !msg.results
             if (taskExecutedWithErr) {
-                console.log('in process message:');
+                console.log(`proc-${processId} message:`);
                 console.log(msg);
-                console.log('in process message end =========');
+                console.log(`proc-${processId} message end`);
                 this.freeChildProc.push(childProc);
                 this.obeserver.emit('execute-task')
                 this.runCurrTasksCb(msg.err, msg.taskId, null);
-            } 
+            }
+            
+            if (msg.warning) {
+                console.log(`proc-${processId} warning:`);
+                console.log(msg.warning);
+            }
 
             if (!didTaskExecuteSuccesfully && !taskExecutedWithErr) {
                 console.log('error handling')
+                console.log(`proc-${processId} unexpected happening:`);
                 console.log(msg);
-                console.log('unexpected happening in proc');
             }
         });
 
         childProc.stdout.on('data', data => {
-            console.log(data.toString());
+            console.log(`proc-${processId}: ${data.toString()}`);
         });
-
+        
         childProc.stderr.on('data', data => {
-            console.log(data.toString());
+            console.log(`proc-${processId} err:\n ${data.toString()}`);
         });
 
         childProc.on('exit', data => {
             this.initiateWorkerThread();
-            this.freeChildProc.push(childProc);
         });
 
         return childProc;

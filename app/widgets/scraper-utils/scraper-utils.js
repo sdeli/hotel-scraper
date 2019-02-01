@@ -2,6 +2,8 @@ const fs = require('fs');
 
 const getJqueryFromLink = require('./modules/get-jquery-from-link/get-jquery-from-link.js');
 const makeRequest = require('./modules/make-request/make-request.js');
+const nodeRequest = require('./modules/node-request/node-request.js');
+const nodeFetch = require('./modules/node-fetch/node-fetch.js');
 
 function getRandomNumber(max, min) {
     let randomFloat = Math.random() * (max - min) + min ;
@@ -40,17 +42,17 @@ function getFormattedDate() {
     return str;
 }
 
-function writeOrAppendToFile(csvFilePath, csv) {
-    let doesFileExist = fs.existsSync(csvFilePath);
+function writeOrAppendToFile(filePath, content) {
+    let doesFileExist = fs.existsSync(filePath);
 
     return new Promise((resolve, reject) => {
         if (doesFileExist) {
-            fs.appendFile(csvFilePath, csv, (err) => {
+            fs.appendFile(filePath, content, (err) => {
                 if (err) reject(err);
                 resolve();
             });
         } else {
-            fs.writeFile(csvFilePath, csv, (err) => {
+            fs.writeFile(filePath, content, (err) => {
                 if (err) reject(err);
                 resolve();
             });
@@ -65,6 +67,13 @@ function readCsvIntoArr(filePath) {
     return linksArr;
 }
 
+function logger(filePath, content) {
+    content = `\n\nlog: ${getFormattedDate()}\n${content}`;
+    content += '==========================='
+    writeOrAppendToFile(filePath, content)
+}
+
+
 module.exports = {
     getRandomNumber,
     clickElemMultipalTimes,
@@ -72,5 +81,8 @@ module.exports = {
     writeOrAppendToFile,
     getJqueryFromLink,
     readCsvIntoArr,
-    makeRequest
+    makeRequest,
+    logger,
+    nodeRequest,
+    nodeFetch
 }

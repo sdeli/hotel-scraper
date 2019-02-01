@@ -21,23 +21,6 @@ const dotenv = require('dotenv');
 let err = dotenv.config({ path: './.env.default' });
 let env = process.env;
 
-const hotelScraper = require('./services/hotel-scraper/hotel-scraper.js'); 
-hotelScraper();
+const hotelScraper = require('./services/hotel-scraper/hotel-scraper.js');
 // const ipAndPortFeeder = require('./services/ip-and-port-feeder/server.js'); 
-// ipAndPortFeeder();
-/*
-for (let i = 0; i <= 100; i++) {
-    makeRequest(i);
-}
-function makeRequest(i) {
-    request('http://localhost:8080/ip-port', function (error, response, body) {
-        try {
-            body = JSON.parse(body)
-        } catch(e) {
-            console.log(e);
-            console.log(body);
-        }
-        console.log('body ' + i + '---' + body.ip + '---' + body.releaseTime + '---' + body.currLinuxTime + '---' + body.lastTimeInUse);  
-        console.log('END -----------------' + body.majom);
-    });
-}*/
+hotelScraper();

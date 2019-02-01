@@ -26,8 +26,13 @@ module.exports = ((config) => {
             if (ipAndPort.isNowUsable) {
                 delete ipAndPort.isNowUsable
                 ipAndPort.lastTimeInUse = new Date().getTime();
-                ipAndPort.lastTimeInUseForMe = new Date();
-                resolve(ipAndPort);
+
+                resolve({
+                    ip : ipAndPort.ip,
+                    port : ipAndPort.port,
+                    userName : ipAndPort.userName,
+                    pwd : ipAndPort.pwd
+                });
                 return;
             }
             
@@ -44,7 +49,12 @@ module.exports = ((config) => {
         ipAndPort.lastTimeInUse = currLinuxTime + releaseTime;
 
         setTimeout(() => {
-            resolve(ipAndPort)
+            resolve({
+                ip : ipAndPort.ip,
+                port : ipAndPort.port,
+                userName : ipAndPort.userName,
+                pwd : ipAndPort.pwd
+            })
         }, releaseTime);
     }
 });
