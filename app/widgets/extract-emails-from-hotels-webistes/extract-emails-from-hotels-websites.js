@@ -2,6 +2,9 @@ const path = require('path');
 const config = require('config');
 
 const hotelsModel = require('models/hotels-model');
+
+const GetHtmlQueue = require('./modules/get-html-queue-class/get-html-queue-class.js');
+
 const PromiseTaskQueue = require('./modules/promise-task-queue-class/promise-task-queue-class.js');
 const promiseTaskQueue = new PromiseTaskQueue();
 
@@ -10,9 +13,14 @@ const {logger} = require('widgets/scraper-utils');
 // let extractor = require('./modules/extract-emails-proc/extract-emails-proc.js');
 
 const MAX_PAGE_EXTRACTION_COUNT = config.emailScraper.maxPageEstraction,
-CATCHER_ERR_EVENT__TERM = config.general.catchedErrEventsName;
+    CATCHER_ERR_EVENT__TERM = config.general.catchedErrEventsName,
+    IS_HEADLESS = config.pupeteer.headless;
 
-module.exports = ((batchId) => {
+    
+module.exports = (async(batchId) => {
+    const getHtmlQueue = GetHtmlQueue({IS_HEADLESS}, {maxRequesterCount : 3})
+    await getHtmlQueue.init();
+    
     return extractEmailsFromHotelsWebsites();
     
     async function extractEmailsFromHotelsWebsites() {
@@ -21,7 +29,7 @@ module.exports = ((batchId) => {
         } catch (error) {
             console.log('shutdown event');
         }
-
+        hotelWebsites = hotelWebsites.slice(16, 70);
         hotelWebsites.forEach(({websiteId, websiteUrl}, i) => {    
             runExtractionParallel(websiteId, websiteUrl, i)
         });
@@ -31,7 +39,8 @@ module.exports = ((batchId) => {
         let extractEmailsParams = {
             MAX_PAGE_EXTRACTION_COUNT,
             websiteUrl,
-            fnId
+            fnId,
+            getHtmlQueue
         }
         
         let cbsParams = [webisteId, websiteUrl];
@@ -54,11 +63,12 @@ module.exports = ((batchId) => {
             process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
             return;
         }
-        
+        console.log('asd')
         console.log(`emails for: ${websiteUrl}`);
         console.log(emails);
         let hasFoundEmals = emails.length > 0;
         if (hasFoundEmals) {
+            console.log('saved');
             insertEmailsIntoDb(emails, websiteId)
         } else {
             console.log(`/////////\nno email found for:\n${websiteUrl}`);

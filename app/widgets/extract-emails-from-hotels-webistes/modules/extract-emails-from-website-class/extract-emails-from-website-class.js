@@ -1,10 +1,10 @@
 const url = require('url');
 const EventEmitter = require('events');
-const {makeRequest, nodeRequest, nodeFetch} = require('widgets/scraper-utils');
+// const {makeRequest, nodeRequest, nodeFetch} = require('widgets/scraper-utils');
 let PushSubPageLinks = require('./modules/push-sub-page-links/push-sub-page-links.js');
 
 module.exports = ((params) => {
-    const {websiteUrl, fnId} = params
+    let {websiteUrl, fnId, getHtmlQueue} = params
     const MAX_PAGE_EXTRACTION_COUNT = params.MAX_PAGE_EXTRACTION_COUNT;
     const MAIN_PAGE_URL = websiteUrl;
     process.stdout.write('extraction started: ' + MAIN_PAGE_URL);
@@ -34,26 +34,26 @@ module.exports = ((params) => {
             this.extractedUrlCounter = 0;
 
             Object.assign(EmailExtractor.prototype, pushSubPageLinks)
-            console.log('executionn started: ' + mainPageUrl);
+            // console.log('executionn started: ' + mainPageUrl);
             this.extract(mainPageUrl);
         }
 
         extract(websiteUrl) {
-            console.log(`prom-${fnId}: url: ${this.extractedUrlCounter}`);
+            // console.log(`prom-${fnId}: url: ${this.extractedUrlCounter}`);
             this.extractedUrlCounter++;
-            
-            makeRequest(websiteUrl)
-            .then(html => {
-                this.pushEmails(html);
-                this.emailsExtractedUrls.push(websiteUrl)
-                
-                this.pushSubPageLinks(html);
-                this.callExtractorOnNextLink();
-            })
-            .catch(err => {
-                console.log(`prom-${fnId} err:`);
-                console.log(err)
-                this.callExtractorOnNextLink();
+        
+            getHtmlQueue.addTask(websiteUrl, (err, html) => {
+                if (err) this.callExtractorOnNextLink();
+
+                try {
+                    this.pushEmails(html);
+                    this.emailsExtractedUrls.push(websiteUrl)
+                    
+                    this.pushSubPageLinks(html);
+                    this.callExtractorOnNextLink();
+                } catch (err) {
+                    this.callExtractorOnNextLink();
+                }
             });
         }
 
@@ -71,12 +71,12 @@ module.exports = ((params) => {
             })
     
             if (emailsInHtmlArr.length > 0) {
-                console.log(`prom-${fnId} ====================`);
-                console.log(`prom-${fnId} additional email found on ${MAIN_PAGE_URL} => \n`);
-                console.log(emailsInHtmlArr);
-                console.log(`prom-${fnId} saved emails:\n`);
-                console.log(this.emails);
-                console.log(`prom-${fnId}====================`);
+                // console.log(`prom-${fnId} ====================`);
+                // console.log(`prom-${fnId} additional email found on ${MAIN_PAGE_URL} => \n`);
+                // console.log(emailsInHtmlArr);
+                // console.log(`prom-${fnId} saved emails:\n`);
+                // console.log(this.emails);
+                // console.log(`prom-${fnId}====================`);
             }
         }
 
