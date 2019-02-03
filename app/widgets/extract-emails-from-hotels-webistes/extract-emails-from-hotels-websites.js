@@ -8,7 +8,8 @@ const promiseTaskQueue = new PromiseTaskQueue();
 const EmailExtractor = require('./modules/extract-emails-from-website-class/extract-emails-from-website-class.js');
 const {logger} = require('widgets/scraper-utils');
 // let extractor = require('./modules/extract-emails-proc/extract-emails-proc.js');
-
+//http://helvetia.ischgl.at/
+//https://www.urban-stay.at/de/content/kontaktieren-sie-uns
 const MAX_PAGE_EXTRACTION_COUNT = config.emailScraper.maxPageEstraction,
 CATCHER_ERR_EVENT__TERM = config.general.catchedErrEventsName;
 
@@ -21,10 +22,13 @@ module.exports = ((batchId) => {
         } catch (error) {
             console.log('shutdown event');
         }
-
-        hotelWebsites.forEach(({websiteId, websiteUrl}, i) => {    
-            runExtractionParallel(websiteId, websiteUrl, i)
-        });
+        let websiteUrl = 'https://www.urban-stay.at/de/content/kontaktieren-sie-uns';
+        let websiteId = 1;
+        let i = 1;
+        runExtractionParallel(websiteId, websiteUrl, i)
+        // hotelWebsites.forEach(({websiteId, websiteUrl}, i) => {    
+        //     runExtractionParallel(websiteId, websiteUrl, i)
+        // });
     }
     
     function runExtractionParallel(webisteId, websiteUrl, fnId) {

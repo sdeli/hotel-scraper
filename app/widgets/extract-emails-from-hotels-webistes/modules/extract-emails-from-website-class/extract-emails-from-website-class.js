@@ -52,7 +52,7 @@ module.exports = ((params) => {
             })
             .catch(err => {
                 console.log(`prom-${fnId} err:`);
-                console.log(err)
+                console.log(err.message)
                 this.callExtractorOnNextLink();
             });
         }
@@ -62,7 +62,7 @@ module.exports = ((params) => {
             emailsInHtmlArr = emailsInHtmlArr || [];
     
             emailsInHtmlArr.forEach(currEmail => {
-                let notEmailLookingFile = !/(.*)(\.jpg|\.JPG|\.gif|\.GIF|\.png|\.PNG|\.pdf)$/.test(currEmail);
+                let notEmailLookingFile = !/(.*)(\.jpg|\.JPG|\.gif|\.GIF|\.png|\.PNG|\.pdf|\.jpeg|\.JPEG)$/.test(currEmail);
                 let doesntHaveEmail = !this.emails.includes(currEmail);
     
                 if (doesntHaveEmail && notEmailLookingFile) {
