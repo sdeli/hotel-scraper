@@ -1,11 +1,13 @@
 const url = require('url');
+const path = require('path');
+const fs = require('fs');
 const EventEmitter = require('events');
-const {makeRequest, nodeRequest, nodeFetch} = require('widgets/scraper-utils');
+const {makeRequest, logger, createFolder} = require('widgets/scraper-utils');
 let PushSubPageLinks = require('./modules/push-sub-page-links/push-sub-page-links.js');
 
 module.exports = ((params) => {
-    const {websiteUrl, fnId} = params
-    const MAX_PAGE_EXTRACTION_COUNT = params.MAX_PAGE_EXTRACTION_COUNT;
+    let {websiteUrl, batchId ,fnId} = params;
+    const MAX_PAGE_EXTRACTION_COUNT = params.mainPageExtractionCount;
     const MAIN_PAGE_URL = websiteUrl;
     process.stdout.write('extraction started: ' + MAIN_PAGE_URL);
 
@@ -50,9 +52,16 @@ module.exports = ((params) => {
                 this.pushSubPageLinks(html);
                 this.callExtractorOnNextLink();
             })
-            .catch(err => {
+            .catch(async (err) => {
                 console.log(`prom-${fnId} err:`);
-                console.log(err.message)
+                console.log(err.message.substr(1, 300));
+
+                try {
+                    await logErr(err, websiteUrl, fnId);
+                } catch (err) {
+                    console.log(err);    
+                }
+
                 this.callExtractorOnNextLink();
             });
         }
@@ -69,15 +78,6 @@ module.exports = ((params) => {
                     this.emails.push(currEmail);
                 }
             })
-    
-            if (emailsInHtmlArr.length > 0) {
-                console.log(`prom-${fnId} ====================`);
-                console.log(`prom-${fnId} additional email found on ${MAIN_PAGE_URL} => \n`);
-                console.log(emailsInHtmlArr);
-                console.log(`prom-${fnId} saved emails:\n`);
-                console.log(this.emails);
-                console.log(`prom-${fnId}====================`);
-            }
         }
 
         callExtractorOnNextLink() {
@@ -92,6 +92,25 @@ module.exports = ((params) => {
                 this.emit('extraction-finished', this.emails);
             }
         }
+    }
+
+    async function logErr(err, websiteUrl, fnId) {
+        let errLogFolderPath = path.join(process.cwd(), `${params.errLogFolderPath}`);
+
+        try {
+            if (!fs.existsSync(errLogFolderPath)) await createFolder(errLogFolderPath);
+        } catch (err) {
+            console.log(err);
+        }
+
+        let errLogfilePath = `${errLogFolderPath}/${batchId}`;
+        let content = ''
+            + `\nfnId: ${fnId}\n`
+            + `\n${websiteUrl}\n`
+            + `\nerrName: ${err.name}\n`
+            + `\nerrStack: ${err.stack}\n`
+
+        await logger(errLogfilePath, content);
     }
 
     return new EmailExtractor(MAIN_PAGE_URL, fnId);

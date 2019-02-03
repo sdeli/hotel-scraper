@@ -68,9 +68,21 @@ function readCsvIntoArr(filePath) {
 }
 
 function logger(filePath, content) {
-    content = `\n\nlog: ${getFormattedDate()}\n${content}`;
+    content = `\n\nlog: ${getFormattedDate()}\n${content}\n`;
     content += '==========================='
-    writeOrAppendToFile(filePath, content)
+    return writeOrAppendToFile(filePath, content)
+}
+
+function createFolder(dirPath) {
+    return new Promise((resolve, reject) => {
+        fs.mkdir(dirPath, { recursive: true }, (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve()
+            }
+        });
+    });
 }
 
 
@@ -83,6 +95,5 @@ module.exports = {
     readCsvIntoArr,
     makeRequest,
     logger,
-    nodeRequest,
-    nodeFetch
+    createFolder
 }

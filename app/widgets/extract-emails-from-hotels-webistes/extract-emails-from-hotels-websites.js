@@ -10,8 +10,9 @@ const {logger} = require('widgets/scraper-utils');
 // let extractor = require('./modules/extract-emails-proc/extract-emails-proc.js');
 //http://helvetia.ischgl.at/
 //https://www.urban-stay.at/de/content/kontaktieren-sie-uns
-const MAX_PAGE_EXTRACTION_COUNT = config.emailScraper.maxPageEstraction,
-CATCHER_ERR_EVENT__TERM = config.general.catchedErrEventsName;
+const MAX_PAGE_EXTRACTION_COUNT = config.emailScraper.maxPageExtraction,
+    CATCHER_ERR_EVENT__TERM = config.general.catchedErrEventsName;
+    ERR_LOG_FOLDER__PATH = config.emailScraper.errorLog;
 
 module.exports = ((batchId) => {
     return extractEmailsFromHotelsWebsites();
@@ -22,10 +23,10 @@ module.exports = ((batchId) => {
         } catch (error) {
             console.log('shutdown event');
         }
-        let websiteUrl = 'https://www.urban-stay.at/de/content/kontaktieren-sie-uns';
+        let websiteUrl = 'http://klippitzhuette.jimdo.com/';
         let websiteId = 1;
         let i = 1;
-        runExtractionParallel(websiteId, websiteUrl, i)
+        runExtractionParallel(websiteId, websiteUrl, i);
         // hotelWebsites.forEach(({websiteId, websiteUrl}, i) => {    
         //     runExtractionParallel(websiteId, websiteUrl, i)
         // });
@@ -33,12 +34,14 @@ module.exports = ((batchId) => {
     
     function runExtractionParallel(webisteId, websiteUrl, fnId) {
         let extractEmailsParams = {
-            MAX_PAGE_EXTRACTION_COUNT,
+            mainPageExtractionCount : MAX_PAGE_EXTRACTION_COUNT,
             websiteUrl,
-            fnId
+            fnId,
+            batchId,
+            errLogFolderPath : ERR_LOG_FOLDER__PATH 
         }
         
-        let cbsParams = [webisteId, websiteUrl];
+        let cbsParams = [webisteId, websiteUrl, fnId];
         promiseTaskQueue.addPromiseTask(extractEmailsProm, extractEmailsCb, [extractEmailsParams], cbsParams);
     }
 
@@ -52,7 +55,7 @@ module.exports = ((batchId) => {
         });
     }
     
-    function extractEmailsCb(err, emails, websiteId, websiteUrl) {
+    function extractEmailsCb(err, emails, websiteId, websiteUrl, fnId) {
         if (err) {
             console.log(err);
             process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
@@ -63,10 +66,10 @@ module.exports = ((batchId) => {
         console.log(emails);
         let hasFoundEmals = emails.length > 0;
         if (hasFoundEmals) {
-            insertEmailsIntoDb(emails, websiteId)
+            insertEmailsIntoDb(emails, websiteId);
         } else {
-            console.log(`/////////\nno email found for:\n${websiteUrl}`);
-            loggeWebsiteWithNoEmail(websiteId, websiteUrl)
+            console.log(`/////////\nno email found for:\n${websiteUrl} //// ${fnId}`);
+            loggeWebsiteWithNoEmail(websiteId, websiteUrl, fnId);
         }
     }
     
