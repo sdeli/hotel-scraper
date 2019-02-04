@@ -8,31 +8,31 @@ module.exports = ((params) => {
         HOTEL_PAGE_LINKS_FILE__PATH
     } = params;
     
-    return extractCurrHotelPageLinksIntoFile(params.hotelSearchResPgLink, params.num);
+    return extractCurrHotelPageLinksIntoFile(params.hotelSearchResPgLink);
 
-    function extractCurrHotelPageLinksIntoFile(hotelSearchResPgLink, num) {
+    function extractCurrHotelPageLinksIntoFile(hotelSearchResPgLink) {
         return new Promise((resolve) => {
             getJqueryFromLink(hotelSearchResPgLink)
             .then($ => {
-                let curHotelPageLinks = getCurrHotelPageLinks($, num);
+                let curHotelPageLinks = getCurrHotelPageLinks($);
                 return writeLinksIntoFile(curHotelPageLinks);
             })
             .then(() => {
                 resolve(true);
             })
             .catch(err => {
-                console.log(err);
+                reject(err);
             })
         });
     }
     
-    function getCurrHotelPageLinks($, num) {
+    function getCurrHotelPageLinks($) {
         let currHotelSubPageATags = $(HOTEL_PAGE_LINKS_CLICKABLE__SEL);
         let curHotelSubPageLinks = [];
         
         currHotelSubPageATags.each((i, aTag) => {
             let localLink = url.format(aTag.attribs.href.trim());
-            let absoluteLink = `${WEBSITES_BASE__URL}${localLink}____${num}`;
+            let absoluteLink = `${WEBSITES_BASE__URL}${localLink}`;
             curHotelSubPageLinks.push(absoluteLink);
         });
         

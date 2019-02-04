@@ -31,7 +31,7 @@ module.exports = ((config) => {
             if (isCurrPgLastSearchResultsPg) break;
             
             var lastConsecutivePagiElemsUrl = await extractCurrSearchResPageLinksIntoCsv(batchId, pageElemParams);
-
+            console.log(lastConsecutivePagiElemsUrl);
             $ = await getJqueryFromLink(lastConsecutivePagiElemsUrl);
         } while (!isCurrPgLastSearchResultsPg);
 

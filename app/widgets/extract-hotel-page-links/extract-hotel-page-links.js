@@ -1,8 +1,9 @@
 const config = require('config');
 const fs = require('fs')
 
-const taskQueue = require('widgets/task-queue');
-// let extractCurrHotelPageLinksIntoCsvFile = require('./moduls/extract-curr-hotel-pg-links-into-csv/extract-curr-hotel-pg-links-into-csv.js')
+const TaskQueue = require('widgets/task-queue');
+const taskQueue = new TaskQueue();
+
 let extractCurrHotelPageLinksIntoCsvFilePath = `${__dirname}/moduls/extract-curr-hotel-pg-links-into-csv/extract-curr-hotel-pg-links-into-csv.js`;
 
 const PAGI_LINKS_FOLDER__PATH = config.pathes.paginationLinksFolder,
@@ -15,10 +16,9 @@ module.exports = extractHotelPagelinks
 function extractHotelPagelinks(batchId) {
     let HotelSearchResPgLinksArr = getHotelSearchResPgLinksArr(batchId);
     
-    
     let subProcessPath = extractCurrHotelPageLinksIntoCsvFilePath;
-    var i = 0
-    allExtractionPromisesArr = HotelSearchResPgLinksArr.map(link => {
+
+    allExtractionPromisesArr = HotelSearchResPgLinksArr.map((link, i) => {
         let hotelLinkExtractionParams = {
             HOTEL_PAGE_LINKS_CLICKABLE__SEL,
             WEBSITES_BASE__URL,
@@ -26,11 +26,10 @@ function extractHotelPagelinks(batchId) {
         }
 
         hotelLinkExtractionParams.hotelSearchResPgLink = link;
-        hotelLinkExtractionParams.num = i;
-        i++;
-        return runExtractionParallel(subProcessPath, taskQueuCb, hotelLinkExtractionParams)
+        
+        return runExtractionParallel(subProcessPath, taskQueuCb, hotelLinkExtractionParams, i)
     });
-
+    
     return Promise.all(allExtractionPromisesArr);
 }
 
@@ -42,18 +41,22 @@ function getHotelSearchResPgLinksArr(batchId) {
     return linksArr;
 }
 
-function runExtractionParallel(subProcessPath, taskQueuCb, paramsForSubProc) {
+function runExtractionParallel(subProcessPath, taskQueuCb, paramsForSubProc, i) {
     return new Promise((resolve, reject) => {
-        let cbsParams = [resolve, reject];
+        let cbsParams = [resolve, reject, i];
         taskQueue.addTask(subProcessPath, taskQueuCb, [paramsForSubProc], cbsParams);
+    })
+    .catch(err => {
+        process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
     });
 }
 
-function taskQueuCb(err, results, resolve, reject) {
+function taskQueuCb(err, results, resolve, reject, i) {
     if (err) {
         console.log(err)
         reject(err);
     } else {
+        console.log('resolved: ' + i);
         resolve(results)
     }
 }

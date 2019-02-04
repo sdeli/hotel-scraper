@@ -2,27 +2,33 @@ const EventEmitter = require('events');
 
 const maxConcurrentProms = 3;/*CPU_COUNT - 1;*/ // leave one core for the main thread
 
-class PromiseTaskQueue {
+class PromiseTaskQueue extends EventEmitter {
     constructor(maxConcurrentPromsArg = maxConcurrentProms) {
+        super();
         this.maxConcurrentProms = maxConcurrentPromsArg;
-        this.obeserver = new EventEmitter();
         this.promiseTasks = [];
         this.runningPromisesCount = 0;
         this.taskCounter = 0;
 
-        this.obeserver.on('execute-task', () => {
+        this.on('execute-task', () => {
             let canRunNewPromise = this.runningPromisesCount < this.maxConcurrentProms;
             let areDueTasks = this.promiseTasks.length > 0;
 
             if (canRunNewPromise && areDueTasks) {
                 this.executePromise();
             }
+
+            let noMoreDueTasks = this.promiseTasks.length === 0;
+                noMoreDueTasks &= this.runningPromisesCount === 0;
+            if (noMoreDueTasks) {
+                this.emit('finished-all-tasks');
+            }
         });
     }
     
     addPromiseTask(fnPromise, cb, fnParamsArr = [], cbsParamsArr = []) {
         this.promiseTasks.push({fnPromise, cb, fnParamsArr, cbsParamsArr});
-        this.obeserver.emit('execute-task');
+        this.emit('execute-task');
     }
     
     executePromise() {
@@ -35,12 +41,12 @@ class PromiseTaskQueue {
         fnPromise(...fnParamsArr)
         .then(results => {
             this.runningPromisesCount--
-            this.obeserver.emit('execute-task');
+            this.emit('execute-task');
             cb(null, results, ...cbsParamsArr);
         })
         .catch(err => {
             this.runningPromisesCount--
-            this.obeserver.emit('execute-task');
+            this.emit('execute-task');
             cb(err, null, ...cbsParamsArr);
         });
     }

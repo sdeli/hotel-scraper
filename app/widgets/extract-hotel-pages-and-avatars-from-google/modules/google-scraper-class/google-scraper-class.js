@@ -68,8 +68,8 @@ module.exports = ((config) => {
             return {websiteUrl, avatarLink}
         }
 
-        close() {
-            this.browser.close();
+        async close() {
+            await this.browser.close();
         }
     }
     
@@ -89,7 +89,7 @@ module.exports = ((config) => {
             password : proxyObj.pwd
         });
     
-        page.setViewport({width: 1285, height: 644});
+        await page.setViewport({width: 1285, height: 644});
         return {browser, page}
     }
     

@@ -13,16 +13,22 @@ module.exports = ((params) => {
     function extractHotelInfos(hotelPgHtml, batchId) {
         let hotelInfos = {};
 
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             hotelInfos.hotelId = uniqid();
             let $ = cheerio.load(hotelPgHtml);
 
             hotelInfos.hotelName = $(HOTEL_NAME__SEL).text().replace(/\n/g, ' ').trim().normalize();
+            let isSelectorCorrect = hotelInfos.hotelName.lengt > 0;
+            if (isSelectorCorrect) reject('incorrect selector: ' + HOTEL_NAME__SEL) 
+            
             hotelInfos.fullAddr =  $(HOTEL_ADDR__SEL).text().trim().normalize().replace('\n', '');
+            isSelectorCorrect = hotelInfos.fullAddr.lengt > 0;
+            if (isSelectorCorrect) reject('incorrect selector: ' + HOTEL_ADDR__SEL) 
+
             hotelInfos.region =  hotelInfos.fullAddr.replace(/(.*,\s\d+\s)(.*)(,.*)/, '$2');
             hotelInfos.country = COUNTRY;
             hotelInfos.batchId = batchId;
-            // console.log('log')
+            
             resolve(hotelInfos);
         });
     }

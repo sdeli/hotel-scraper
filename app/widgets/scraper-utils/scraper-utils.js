@@ -2,8 +2,6 @@ const fs = require('fs');
 
 const getJqueryFromLink = require('./modules/get-jquery-from-link/get-jquery-from-link.js');
 const makeRequest = require('./modules/make-request/make-request.js');
-const nodeRequest = require('./modules/node-request/node-request.js');
-const nodeFetch = require('./modules/node-fetch/node-fetch.js');
 
 function getRandomNumber(max, min) {
     let randomFloat = Math.random() * (max - min) + min ;

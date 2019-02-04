@@ -1,8 +1,8 @@
 {
-  "name": "task-queue",
+  "name": "send-mail",
   "version": "1.0.0",
   "description": "",
-  "main": "task-queue-class.js",
+  "main": "send-mail-class.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

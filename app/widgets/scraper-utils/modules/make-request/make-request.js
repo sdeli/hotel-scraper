@@ -26,14 +26,4 @@ module.exports = ((link) => {
             reject(err)
         });
     }
-    
-    function doRequestAgainOnErr(err, resolve, reject, link) {
-        let hasBeenCalledAgain3times = failedCallCount >=4;
-        if (hasBeenCalledAgain3times) {
-            reject(err)
-        } else {
-            failedCallCount++;
-            makeRequest(resolve, reject, link)
-        } 
-    }
 });

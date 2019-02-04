@@ -4,7 +4,7 @@ drop procedure if exists insertHotelInfos;
 delimiter //
 create procedure insertHotelInfos(
 	in hotelId char(18), 
-    in hotelName varchar(70),
+    in hotelName varchar(100),
     in Country varchar(15),
     in Region varchar(52),
     in fullAddr varchar(150),

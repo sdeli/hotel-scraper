@@ -1,17 +1,23 @@
+const config = require('config');
 const dbPool = require('widgets/db-pool');
+
+const FULL_ADDR_LENGTHL = config.hotelsModel.fullAddrLength,
+    HOTEL_NAME_LENGTH = config.hotelsModel.regionLength,
+    REGION_LENGTH = config.hotelsModel.hotelNameLength
 
 const hotelsModel = (() => {
     
     function hotelInfosFromBookingIntoDb(hotelInfosArr) {
-        let sql = 'set autocommit = 0;\nSTART TRANSACTION;\n';
-            
+        // let sql = 'set autocommit = 0;\nSTART TRANSACTION;\n';
+        let sql = '';
+        
         hotelInfosArr.forEach((hotelInfosObj) => {
             sql += getHotelInfosFromBookingSql(hotelInfosObj);
             sql += '\n'
             return sql;
         });
         
-        sql += 'COMMIT;\nset autocommit = 1;';
+        // sql += 'COMMIT;\nset autocommit = 1;';
 
         return new Promise((resolve, reject) => {
             dbPool.queryCb(sql, (err, results, fields) => {
@@ -27,6 +33,14 @@ const hotelsModel = (() => {
     }
 
     function getHotelInfosFromBookingSql(hotelInfosObj) {
+        let isdataLongerThenExpected = hotelInfosObj.fullAddr.length > FULL_ADDR_LENGTHL;
+            isdataLongerThenExpected &= hotelInfosObj.hotelName.length > HOTEL_NAME_LENGTH;
+            isdataLongerThenExpected &= hotelInfosObj.region.length > REGION_LENGTH;
+        if (isdataLongerThenExpected) {
+            process.emit(CATCHER_ERR_EVENT__TERM, `datalonger then expected: ${JSON.stringify(err, null, 2)}`);
+            return '';
+        }
+
         let hotelId = dbPool.escape(hotelInfosObj.hotelId);
         let hotelName = dbPool.escape(hotelInfosObj.hotelName);
         let country = dbPool.escape(hotelInfosObj.country);

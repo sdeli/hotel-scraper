@@ -13,7 +13,7 @@ const IS_HEADLESS = config.pupeteer.headless,
 
     
 module.exports = ((batchId) => {
-    let googleScraperQueue = GoogleScraperQueue({
+    const googleScraperQueue = GoogleScraperQueue({
         IS_HEADLESS,
         HOTEL_WEBSITE_LINK__SEL,
         HOTEL_AVATAR_IMG__SEL,
@@ -25,6 +25,7 @@ module.exports = ((batchId) => {
     async function extractHotelWebsiteAndAvatarFromGoogle(batchId) {
         try {
             var hotelsArr = await hotelsModel.getHotelNamesAndAdresses(batchId)
+            await googleScraperQueue.init();
         } catch (err) {
             process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
             console.log('emit shutdown');
@@ -34,30 +35,47 @@ module.exports = ((batchId) => {
             min : DELAY_MIN__MILI_SECS,
             max : DELAY_MAX__MILI_SECS
         }
+        console.log('asd');
+        let getWebsiteAndAvatarFromGooglePromises = hotelsArr.map(hotelObj => {
+            return new Promise((resolve, reject) => {
+                let {hotelId, hotelName, fullAddr} = hotelObj;
+                let keywords = [hotelName, fullAddr];
+                let captchaCounter = 0;
+                cbParamsArr = [resolve, [batchId, hotelId], captchaCounter]
 
-        hotelsArr.forEach(hotelObj => {
-            let {hotelId, hotelName, fullAddr} = hotelObj;
-            keywords = [hotelName, fullAddr];
-            googleScraperQueue.addTask(keywords, cb, [batchId, hotelId], delay);
+                googleScraperQueue.addTask(keywords, cb, cbParamsArr, delay);
+            });
         });
         
+        await Promise.all(getWebsiteAndAvatarFromGooglePromises)
     }
     
-    function cb(err, hotelInfosObj, batchId, hotelId) {
+    function cb(err, hotelInfosObj, resolve, sqlParams, captchaCounter) {
         let didEncounterCaptcha = err && err.msg === 'encountered captcha';
         if (didEncounterCaptcha) {
-            let keywords = hotelInfosObj;
-            googleScraperQueue.addTask(keywords, cb)
-            process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
+            if (captchaCounter > 3) {
+                reolve();
+                return;
+            }
+            
+            captchaCounter++
+            tryAvatarAndWebsiteExtractionAgain(hotelInfosObj, captchaCounter)
             return;
         } else if (err) {
-            process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
+            resolve();
+            process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify({err, hotelInfosObj}, null, 2));
             return;
         }
         
-        saveHotelWebsiteAndAvatarIntoDb(hotelInfosObj, batchId, hotelId);
+        saveHotelWebsiteAndAvatarIntoDb(hotelInfosObj, ...sqlParams);
+        resolve();
     }
-    //18nt9wgjrdoh7dq
+    
+    function tryAvatarAndWebsiteExtractionAgain(hotelInfosObj, captchaCounter) {
+        let err = `encountered captcha let : ${hotelInfosObj}, captchaCounter: ${captchaCounter}`;
+        googleScraperQueue.addTask(let , cb)
+        process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
+    }
     function saveHotelWebsiteAndAvatarIntoDb(hotelInfosObj, batchId, hotelId) {
         hotelInfosObj.batchId = batchId;
         hotelInfosObj.hotelId = hotelId;

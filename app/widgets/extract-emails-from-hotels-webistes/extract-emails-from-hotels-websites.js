@@ -7,9 +7,7 @@ const promiseTaskQueue = new PromiseTaskQueue();
 
 const EmailExtractor = require('./modules/extract-emails-from-website-class/extract-emails-from-website-class.js');
 const {logger} = require('widgets/scraper-utils');
-// let extractor = require('./modules/extract-emails-proc/extract-emails-proc.js');
-//http://helvetia.ischgl.at/
-//https://www.urban-stay.at/de/content/kontaktieren-sie-uns
+
 const MAX_PAGE_EXTRACTION_COUNT = config.emailScraper.maxPageExtraction,
     CATCHER_ERR_EVENT__TERM = config.general.catchedErrEventsName;
     ERR_LOG_FOLDER__PATH = config.emailScraper.errorLog;
@@ -19,17 +17,20 @@ module.exports = ((batchId) => {
     
     async function extractEmailsFromHotelsWebsites() {
         try {
-            var hotelWebsites = await hotelsModel.getWebsitesByBatchId('2019-01-31_12-05-47');
+            var hotelWebsites = await hotelsModel.getWebsitesByBatchId(batchId);
         } catch (error) {
             console.log('shutdown event');
         }
-        let websiteUrl = 'http://klippitzhuette.jimdo.com/';
-        let websiteId = 1;
-        let i = 1;
-        runExtractionParallel(websiteId, websiteUrl, i);
-        // hotelWebsites.forEach(({websiteId, websiteUrl}, i) => {    
-        //     runExtractionParallel(websiteId, websiteUrl, i)
-        // });
+        
+        hotelWebsites.map(({websiteId, websiteUrl}, i) => {    
+            runExtractionParallel(websiteId, websiteUrl, i)
+        });
+
+        return new Promise((resolve) => {
+            promiseTaskQueue.on('finished-all-tasks', () => {
+                resolve();
+            });
+        });
     }
     
     function runExtractionParallel(webisteId, websiteUrl, fnId) {

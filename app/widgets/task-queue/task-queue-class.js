@@ -11,7 +11,7 @@ let maxConcurrency = 3/*CPU_COUNT - 1;*/ // leave one core for the main thread
 
 class TaskQueue {
     constructor(maxConcurrencyArg = maxConcurrency) {
-        maxConcurrency = maxConcurrencyArg;
+        this.maxConcurrency = maxConcurrencyArg;
         this.obeserver = new EventEmitter();
         this.tasks = [];
         this.callBacks = [];
@@ -20,8 +20,15 @@ class TaskQueue {
         this.obeserver.on('execute-task', () => {
             let areFreeChildProcToRunTask = this.freeChildProc.length > 0;
             let areDueTasks = this.tasks.length > 0;
+
             if (areFreeChildProcToRunTask && areDueTasks) {
                 this.execute();
+            }
+
+            let noMoreDueTasks = this.callBacks.length === 0;
+                noMoreDueTasks &= this.freeChildProc.length === this.maxConcurrency;
+            if (noMoreDueTasks) {
+                this.shutDownChildProcesses()
             }
         })
 
@@ -31,6 +38,7 @@ class TaskQueue {
     addTask(tasksFilePath, cb, taskParamsArr = [], cbsParamsArr = []) {
         let taskId = uniqid();
         this.tasks.push({taskId, tasksFilePath, cb, taskParamsArr, cbsParamsArr});
+        console.log(this.tasks.length);
         this.obeserver.emit('execute-task')
     }
     
@@ -45,7 +53,7 @@ class TaskQueue {
     }
     
     initiateWorkerThreads() {
-        for (let i = 0; i < maxConcurrency; i++) {
+        for (let i = 0; i < this.maxConcurrency; i++) {
             let childProc = this.initiateWorkerThread(i);
             this.freeChildProc.push(childProc);  
         }
@@ -67,8 +75,8 @@ class TaskQueue {
             let didTaskExecuteSuccesfully = !msg.err && msg.results;
             if (didTaskExecuteSuccesfully) {
                 this.freeChildProc.push(childProc);
-                this.obeserver.emit('execute-task')
                 this.runCurrTasksCb(false, msg.taskId, msg.results);
+                this.obeserver.emit('execute-task')
             } 
             
             let taskExecutedWithErr = msg.err && !msg.results
@@ -77,8 +85,8 @@ class TaskQueue {
                 console.log(msg);
                 console.log(`proc-${processId} message end`);
                 this.freeChildProc.push(childProc);
-                this.obeserver.emit('execute-task')
                 this.runCurrTasksCb(msg.err, msg.taskId, null);
+                this.obeserver.emit('execute-task')
             }
             
             if (msg.warning) {
@@ -102,18 +110,36 @@ class TaskQueue {
         });
 
         childProc.on('exit', data => {
-            this.initiateWorkerThread();
+            // if the child process exited and it is not the end of all tasks then the exit was due to an error and so new child process has to be spawned
+            let isNotEndOfAllTasks = this.callBacks.length !== 0;
+                isNotEndOfAllTasks &= this.freeChildProc.length !== this.maxConcurrency;
+                if(isNotEndOfAllTasks) {
+                    this.initiateWorkerThread();
+                }
         });
 
         return childProc;
     }
 
     runCurrTasksCb(err, taskId, results) {
-        let cbOfCurrFnObj = getCbOfCurrTask(this.callBacks, taskId)
-        // console.log('err handling what if no taskId');
-        let cbsParamsArr = cbOfCurrFnObj.cbsParamsArr;
-        // console.log('asd');
-        cbOfCurrFnObj.cb(err, results, ...cbsParamsArr);
+        let cbOfCurrFnObj = getCbOfCurrTask(this.callBacks, taskId);
+
+        let indexOfCb = this.callBacks.indexOf(cbOfCurrFnObj);
+        this.callBacks.splice(indexOfCb, 1);
+
+        setImmediate(() => {
+            // console.log('err handling what if no taskId');
+            let cbsParamsArr = cbOfCurrFnObj.cbsParamsArr;
+            // console.log('asd');
+            cbOfCurrFnObj.cb(err, results, ...cbsParamsArr);
+        })
+    }
+
+    shutDownChildProcesses() {
+        this.freeChildProc.forEach(childProc => {
+            this.freeChildProc[0].stdin.write('majom2');
+            childProc.kill('SIGINT');
+        });
     }
 }
 

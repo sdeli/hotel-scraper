@@ -17,13 +17,13 @@ module.exports = ((config) => {
     })
     
     class GoogleScraperQueue {
-        constructor() {
+        async init() {
             this.maxScraperCount = PROXIES.length;
             this.obeserver = new EventEmitter();
             this.tasks = [];
             this.callBacks = [];
             this.freeGoogleScrapers = [];
-            
+
             this.obeserver.on('execute-task', () => {
                 let arefreeGoogleScrapersToRunTask = this.freeGoogleScrapers.length > 0;
                 let areDueTasks = this.tasks.length > 0;
@@ -38,7 +38,7 @@ module.exports = ((config) => {
                 }
             })
     
-            this.initGoogleScrapers();
+            await this.initGoogleScrapers();
         }
         
         addTask(keywords, cb, cbParamsArr = [], delay) {
@@ -56,7 +56,7 @@ module.exports = ((config) => {
                 var hotelInfosObj = await googleScraper.getHotelWebsiteAndAvatar(...keywords, delay)
                 var didEncounterCaptcha = hotelInfosObj === false;
             } catch (err) {
-                this.runCurrTasksCb(taskId, err, false);
+                this.runCurrTasksCb(err, taskId, false);
                 this.freeGoogleScrapers.push(googleScraper);
                 this.obeserver.emit('execute-task');
                 return;
@@ -66,23 +66,23 @@ module.exports = ((config) => {
             this.obeserver.emit('execute-task');
 
             if (!didEncounterCaptcha) {
-                this.runCurrTasksCb(taskId, false, hotelInfosObj);
+                this.runCurrTasksCb(false, taskId, hotelInfosObj);
             } else {
                 let err = new Error('encountered captcha');
-                this.runCurrTasksCb(taskId, err, keywords);
+                this.runCurrTasksCb(err, taskId, keywords);
             }
         
         }
         
-        initGoogleScrapers() {
+        async initGoogleScrapers() {
             for (let i = 0; i < this.maxScraperCount; i++) {
                 let googleScraper = new GoogleScraper(PROXIES[i]);
-                googleScraper.init();
+                await googleScraper.init();
                 this.freeGoogleScrapers.push(googleScraper);  
             }
         }
         
-        runCurrTasksCb(taskId, err, hotelInfosObj) {
+        runCurrTasksCb(err, taskId, hotelInfosObj) {
             let cbOfCurrFnObj = getCbOfCurrTask(this.callBacks, taskId)
             // console.log('err handling what if no taskId');
             let {cbParamsArr} = cbOfCurrFnObj;
@@ -90,9 +90,11 @@ module.exports = ((config) => {
         }
 
         async shutDownBrowsers() {
-            this.freeGoogleScrapers.forEach(googleScraper => {
-                googleScraper.close();
-            });
+            let scrapersCount = this.freeGoogleScrapers.length;
+
+            for (let i = 0; i < scrapersCount; i++) {
+                await this.freeGoogleScrapers[i].close();
+            }
         }
     }
     
@@ -106,6 +108,6 @@ module.exports = ((config) => {
         return cbOfCurrFnObj;
     }
 
-    return new GoogleScraperQueue()
+    return new GoogleScraperQueue();
 });
 
