@@ -16,7 +16,6 @@ let sendMail = new SendMail();
 
 const {getFormattedDate, createFolder, logger} = require('widgets/scraper-utils');
 
-
 module.exports = scrapeController;
 
 function scrapeController() {
