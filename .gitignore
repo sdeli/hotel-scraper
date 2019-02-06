@@ -1,5 +1,7 @@
 node_modules/
-app/assets/
+app/log/*
+app/assets/hotel-sub-age-links
+app/assets/pagination-links
 app/.env.default
 app/config
 .vscode
