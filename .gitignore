@@ -1,5 +1,5 @@
 node_modules/
-app/log/error-log/email-scraper*
+app/log/error-log/email-scraper/*
 app/log/error-log/general-err/*
 app/log/no-email-webistes/*
 app/assets/hotel-sub-age-links
