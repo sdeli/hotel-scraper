@@ -1,5 +1,7 @@
 node_modules/
-app/log/*
+app/log/error-log/email-scraper*
+app/log/error-log/general-err/*
+app/log/no-email-webistes/*
 app/assets/hotel-sub-age-links
 app/assets/pagination-links
 app/.env.default
