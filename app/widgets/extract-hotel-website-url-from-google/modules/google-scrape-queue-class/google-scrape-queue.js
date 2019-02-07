@@ -21,6 +21,7 @@ module.exports = ((config) => {
             this.tasks = [];
             this.callBacks = [];
             this.freeGoogleScrapers = [];
+            this.executedTaskCount = 0;
 
             this.obeserver.on('execute-task', () => {
                 let arefreeGoogleScrapersToRunTask = this.freeGoogleScrapers.length > 0;
@@ -29,8 +30,9 @@ module.exports = ((config) => {
                     this.execute();
                 }
 
-                let finishedAllExecution = this.callBacks.length > 0;
-                finishedAllExecution &= this.freeGoogleScrapers.length === this.maxScraperCount;
+                let finishedAllExecution = this.callBacks.length === 0;
+                    finishedAllExecution &= this.tasks.length === 0;
+                    finishedAllExecution &= this.freeGoogleScrapers.length === this.maxScraperCount;
                 if (finishedAllExecution) {
                     this.shutDownBrowsers();
                 }
@@ -49,25 +51,29 @@ module.exports = ((config) => {
             let {taskId, keywords, cb, cbParamsArr, delay} = this.tasks.shift();
             this.callBacks.push({taskId, cb, cbParamsArr})
             let googleScraper = this.freeGoogleScrapers.shift();
-            
+
+            console.log(this.executedTaskCount);
+            this.executedTaskCount++;
             var websiteUrl = await googleScraper.getHotelWebsite(...keywords, delay)
 
             this.freeGoogleScrapers.push(googleScraper);
-            this.obeserver.emit('execute-task');
-
+            
             let errDuringExtraction = Boolean(websiteUrl.err);
             if (errDuringExtraction) {
                 this.runCurrTasksCb(websiteUrl.err, taskId, keywords);
+                this.obeserver.emit('execute-task');
                 return;
             }
             
             let didntFindUrlForWebsite = websiteUrl === false;
             if (didntFindUrlForWebsite) {
                 this.runCurrTasksCb(false, taskId, keywords);
+                this.obeserver.emit('execute-task');
                 return;
             }
-                
+            
             this.runCurrTasksCb(false, taskId, websiteUrl);
+            this.obeserver.emit('execute-task');
         }
         
         async initGoogleScrapers() {
@@ -81,8 +87,13 @@ module.exports = ((config) => {
         runCurrTasksCb(err, taskId, results) {
             let cbOfCurrFnObj = getCbOfCurrTask(this.callBacks, taskId)
             // console.log('err handling what if no taskId');
-            let {cbParamsArr} = cbOfCurrFnObj;
-            cbOfCurrFnObj.cb(err, results, ...cbParamsArr);
+            let indexOfCb = this.callBacks.indexOf(cbOfCurrFnObj);
+            this.callBacks.splice(indexOfCb, 1);
+
+            setImmediate(() => {
+                let {cbParamsArr} = cbOfCurrFnObj;
+                cbOfCurrFnObj.cb(err, results, ...cbParamsArr);
+            });
         }
 
         async shutDownBrowsers() {

@@ -41,7 +41,9 @@ module.exports = ((batchId) => {
                 googleScraperQueue.addTask(keywords, cb, cbParamsArr, delay);
             });
         });
-        await Promise.all(getWebsiteGooglePromises)
+        
+        await Promise.all(getWebsiteGooglePromises);
+        console.log('asd');
     }
     //
     function cb(err, results, resolve, sqlParams) {

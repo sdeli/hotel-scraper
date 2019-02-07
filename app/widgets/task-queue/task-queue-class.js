@@ -132,7 +132,7 @@ class TaskQueue {
             let cbsParamsArr = cbOfCurrFnObj.cbsParamsArr;
             // console.log('asd');
             cbOfCurrFnObj.cb(err, results, ...cbsParamsArr);
-        })
+        });
     }
 
     shutDownChildProcesses() {

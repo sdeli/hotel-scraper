@@ -17,9 +17,9 @@ module.exports = extractHotelInfos
 async function extractHotelInfos(batchId) {
     let hotelPageLinksArr = getHotelPageLinks(batchId);
     
-    for (let i = 1200; i < hotelPageLinksArr.length; i += 10) {
+    for (let i = 0; i < hotelPageLinksArr.length; i += 10) {
         try {
-            await extract20HotelPagesForInfos(hotelPageLinksArr, i, batchId)
+            await extract10HotelPagesForInfos(hotelPageLinksArr, i, batchId)
         } catch (err) {
             console.log('err handling');
             console.log(err);
@@ -38,7 +38,7 @@ function getHotelPageLinks(batchId) {
     return hotelPageLinksArr;
 }
 
-function extract20HotelPagesForInfos(hotelPageLinksArr, i, batchId) {
+function extract10HotelPagesForInfos(hotelPageLinksArr, i, batchId) {
     let currHotelPageLinksArr = hotelPageLinksArr.slice(i, i + 10);
 
     let getHotelPgHtmlsPromisesArr = currHotelPageLinksArr.map(hotelPageLink => {

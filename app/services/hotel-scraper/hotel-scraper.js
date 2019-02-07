@@ -21,29 +21,31 @@ module.exports = scrapeController;
 function scrapeController() {
     let batchId = getFormattedDate();
 
-    initiateHotelSearch()
-    .then((firstSearchResPgsLink) => {
-        return extractSearchResultPageLinks(batchId, firstSearchResPgsLink);
-    })
-    .then(() => {
-        return extractHotelPagelinks(batchId);
-    })
-    .then(() => {
-        return extractHotelInfos(batchId);
-    })
-    .then(() => {
-        return extractHotelWebsiteFromGoogle(batchId);
-    })
-    .then(() => {
-        return extractEmailsFromHotelsWebsites(batchId);    
-    })
+    extractEmailsFromHotelsWebsites('asd')
+    // initiateHotelSearch()
+    // .then((firstSearchResPgsLink) => {
+    //     return extractSearchResultPageLinks(batchId, firstSearchResPgsLink);
+    // })
+    // .then(() => {
+    //     return extractHotelPagelinks(batchId);
+    // })
+    // .then(() => {
+    //     return extractHotelInfos(batchId);
+    // })
+    // .then(() => {
+    //     return extractHotelWebsiteFromGoogle(batchId);
+    // })
+    // .then(() => {
+    //     return extractEmailsFromHotelsWebsites(batchId);    
+    // })
     .then(async () => {
+        console.log('sending mail');
         await sendMail.result();
         process.kill(process.pid, 'SIGHUP');
     })
     .catch(async err => {
         process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
-        await sendMail.err(err, generalErrCount);
+        await sendMail.err(err);
     });
 
     process.on(CATCHER_ERR_EVENT__TERM, (errStr) => {

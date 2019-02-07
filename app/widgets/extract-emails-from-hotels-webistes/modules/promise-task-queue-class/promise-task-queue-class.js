@@ -17,10 +17,11 @@ class PromiseTaskQueue extends EventEmitter {
             if (canRunNewPromise && areDueTasks) {
                 this.executePromise();
             }
-
+            
             let noMoreDueTasks = this.promiseTasks.length === 0;
-                noMoreDueTasks &= this.runningPromisesCount === 0;
+            noMoreDueTasks &= this.runningPromisesCount === 0;
             if (noMoreDueTasks) {
+                console.log('finished all tasks');
                 this.emit('finished-all-tasks');
             }
         });
@@ -34,6 +35,7 @@ class PromiseTaskQueue extends EventEmitter {
     executePromise() {
         let {fnPromise, cb, fnParamsArr, cbsParamsArr} = this.promiseTasks.shift();
         
+        console.log('running promises count: ' + this.runningPromisesCount);
         this.taskCounter++;
         console.log('task: ' + this.taskCounter);
         this.runningPromisesCount++
