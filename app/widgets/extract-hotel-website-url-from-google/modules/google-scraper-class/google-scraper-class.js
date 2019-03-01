@@ -30,6 +30,7 @@ module.exports = ((config) => {
                     return this.extractHotelInfos(url);
                 })
                 .then((websiteUrl) => {
+                    websiteUrl = trimWebsiteUrl(websiteUrl);
                     resolve(websiteUrl);
                 })
                 .catch(err => {
@@ -53,7 +54,7 @@ module.exports = ((config) => {
             return isCaptcha;
         }
 
-        async extractHotelInfos(url) {
+        async extractHotelInfos() {
             let currHotelsWebsiteUrl = await this.page.$eval(HOTEL_WEBSITE_LINK_CONT__SEL, hotelWebsiteCont => {
                 let aTags = hotelWebsiteCont.children;
 
@@ -95,6 +96,15 @@ module.exports = ((config) => {
         await page.setViewport({width: 1285, height: 644});
         await page.setJavaScriptEnabled(false);
         return {browser, page}
+    }
+
+    function trimWebsiteUrl(websiteUrl) {
+        let hasGooglePrefixedTheUrl = /^https:\/\/www\.google\.com\/url\?q=/.test(websiteUrl);
+        if (hasGooglePrefixedTheUrl) {
+            websiteUrl = websiteUrl.replace(/^(https:\/\/www\.google\.com\/url\?q=)(.*)/, '$2');
+        }
+
+        return websiteUrl;
     }
     
     return GoogleScraper;

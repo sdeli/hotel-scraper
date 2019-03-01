@@ -7,6 +7,7 @@ let selectTimespanForResidence = require('./modules/select-timespan-for-residenc
 
 module.exports = ((config) => {
     const URL_TO_SEARCH_FROM = config.urls.searchHotelForm,
+        CATCHER_ERR_EVENT__TERM = config.errors.events[0],
         CHOOSE_MONTH_MAX_CLICK_COUNT = config.general.monthSearchMaxClick,
         CHOOSE_MONTH_MIN_CLICK_COUNT = config.general.monthSearchMinClick,
         COUNTRY_NAME = config.general.searchedCountry,
@@ -16,7 +17,11 @@ module.exports = ((config) => {
         SEARCH_FORM_DAYS_IN_CALENDAR__SEL = config.selectors.searchForm.calendarDays,
         DAYS_IN_CALENDAR_SELECTED_CLASS_TRACE = config.selectors.searchForm.selectedClassTrace,
         SEARCH_FORM_SUBMIT_BTN__SEL = config.selectors.searchForm.submitBtn,
-        HEADLESS = config.pupeteer.headless;
+        HEADLESS = config.pupeteer.headless,
+        CHECKBOX_SPAN__SEL = config.selectors.searchFilters.checkBoxSpanSel,
+        HOTEL__TERM = config.selectors.searchFilters.hotelTerm;
+        CHALET__TERM = config.selectors.searchFilters.chaletTerm;
+        GUEST_HOUSE__TERM = config.selectors.searchFilters.guestHousesTerm;
     
     selectTimespanForResidence = selectTimespanForResidence({
         SEARCH_FORM_DAYS_IN_CALENDAR__SEL,
@@ -55,9 +60,13 @@ module.exports = ((config) => {
         await page.type(SEARCH_FORM_COUNTRY_INPUT__SEL, COUNTRY_NAME);
 
         await enterInfosIntoCalendar(page);
-        
-        let firstSearchResPgsLink = await submitSearchGoToFirstSearchResPAge(page);
-        
+        await submitSearchGoToFirstSearchResPAge(page);
+
+        await filterSearch(page, HOTEL__TERM);
+        await filterSearch(page, CHALET__TERM);
+        await filterSearch(page, GUEST_HOUSE__TERM);
+
+        let firstSearchResPgsLink = await page.url();
         await browser.close();
         return firstSearchResPgsLink;
     }
@@ -74,10 +83,36 @@ module.exports = ((config) => {
     
     async function submitSearchGoToFirstSearchResPAge(page) {
         await page.click(SEARCH_FORM_SUBMIT_BTN__SEL);
-        await page.waitForNavigation({waitUntil : "networkidle2"});
+        await page.waitForNavigation();
         
         let url = await page.url();
         return url;
+    }
+
+    async function filterSearch(page, textInCheckbox) {
+        // The filtering takes place with ticking in a checkbox which based on its filter (guest house, bed and brekfast...) filters the search
+        let allSearchFilterCheckboxesOnPage = await page.$$(CHECKBOX_SPAN__SEL)
+
+        let selectorHasBeenChangedOnPage = allSearchFilterCheckboxesOnPage.lengt === 0;
+        if (selectorHasBeenChangedOnPage) {
+            let err = `selector doesnt exists: ${CHECKBOX_SPAN__SEL}`;
+            process.emit(CATCHER_ERR_EVENT__TERM, err);
+            return;
+        }
+
+        let checkBoxesIndex = await page.$$eval(CHECKBOX_SPAN__SEL, (checkBoxes, textInCheckbox) => {
+            for (let i = 0; i < checkBoxes.length; i++) {
+                let isCheckboxWeWantToClick = checkBoxes[i].innerText === textInCheckbox;
+                if (isCheckboxWeWantToClick) {
+                    return i;
+                }
+            }
+        }, HOTEL__TERM);
+        
+        let checkbox = allSearchFilterCheckboxesOnPage[checkBoxesIndex];
+        await checkbox.click(checkbox);
+        // pupeteer doesnt have a built in function just to wait for network idle if there is no other event navigation or appearance of a known selector.. so we need to waitFor(certainmilsecs)
+        await page.waitFor(8000);
     }
 
     // async function setFiltersOnFirstSearchResultsPage(page) {

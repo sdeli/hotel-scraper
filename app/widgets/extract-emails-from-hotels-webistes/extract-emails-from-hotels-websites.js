@@ -21,12 +21,6 @@ module.exports = ((batchId) => {
         } catch (error) {
             console.log('shutdown event');
         }
-        // let hotelWebsites = [
-        //     {
-        //         websiteId : 12,
-        //         websiteUrl : 'http://www.wiederkehr.cc/index.php/kontakt' 
-        //     }
-        // ];
 
         hotelWebsites.map(({websiteId, websiteUrl}, i) => {    
             runExtractionParallel(websiteId, websiteUrl, i)

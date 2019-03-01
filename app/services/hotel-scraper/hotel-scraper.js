@@ -21,11 +21,10 @@ module.exports = scrapeController;
 function scrapeController() {
     let batchId = getFormattedDate();
 
-    extractEmailsFromHotelsWebsites('asd')
-    // initiateHotelSearch()
-    // .then((firstSearchResPgsLink) => {
-    //     return extractSearchResultPageLinks(batchId, firstSearchResPgsLink);
-    // })
+    initiateHotelSearch()
+    .then((firstSearchResPgsLink) => {
+        return extractSearchResultPageLinks(batchId, firstSearchResPgsLink);
+    })
     // .then(() => {
     //     return extractHotelPagelinks(batchId);
     // })
@@ -44,14 +43,15 @@ function scrapeController() {
         process.kill(process.pid, 'SIGHUP');
     })
     .catch(async err => {
-        process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
-        await sendMail.err(err);
+        console.log(err);
+        // process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
+        // await sendMail.err(err);
     });
 
-    process.on(CATCHER_ERR_EVENT__TERM, (errStr) => {
-        console.log('\ngeneral err: ' + errStr + '\n');
-        logGenerealErr(errStr, batchId)
-    });
+    // process.on(CATCHER_ERR_EVENT__TERM, (errStr) => {
+    //     console.log('\ngeneral err: ' + errStr + '\n');
+    //     logGenerealErr(errStr, batchId)
+    // });
 };
 
 

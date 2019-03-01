@@ -45,7 +45,7 @@ module.exports = ((batchId) => {
         await Promise.all(getWebsiteGooglePromises);
         console.log('asd');
     }
-    //
+    
     function cb(err, results, resolve, sqlParams) {
         if (err) {
             resolve();
