@@ -29,6 +29,12 @@ class SendMail {
     }
     
     async err(err) {
+        if (err instanceof Error) {
+            err = err.toString();
+        } else {
+            err = JSON.stringify(err);
+        }
+
         let mailOptions = {
             from: SEND_FROM_EMAIL,
             to: SEND_TO_EMAIL,

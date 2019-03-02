@@ -1,5 +1,5 @@
 # create db and tables
-source ./dbs/create-db-and-tables.sql
+source ./dbs/hotel_data_db.sql
 
 # create procedures
-#source ./procedures/
+source ./procedures/insert-hotel-infos-proc.sql

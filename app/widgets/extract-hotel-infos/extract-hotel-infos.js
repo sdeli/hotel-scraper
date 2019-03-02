@@ -11,13 +11,15 @@ const HOTEL_PAGE_LINKS_FOLDER__PATH = config.pathes.hotelSubPageLinks,
     HOTEL_ADDR__SEL = config.selectors.hotelPage.hotelAddr,
     COUNTRY = config.general.searchedCountry,
     CATCHER_ERR_EVENT__TERM = config.errors.events[0];
+    
+const PARALLEL_REQUEST_COUNT = 10;
 
 module.exports = extractHotelInfos
 
 async function extractHotelInfos(batchId) {
     let hotelPageLinksArr = getHotelPageLinks(batchId);
-    
-    for (let i = 0; i < hotelPageLinksArr.length; i += 10) {
+    makeRequest(hotelPageLinksArr[1]);
+    for (let i = 0; i < hotelPageLinksArr.length; i += PARALLEL_REQUEST_COUNT) {
         try {
             await extract10HotelPagesForInfos(hotelPageLinksArr, i, batchId)
         } catch (err) {
@@ -25,7 +27,7 @@ async function extractHotelInfos(batchId) {
             console.log(err);
         }
 
-        console.log(`next ${i} - ${i + 10} =================`);
+        console.log(`next ${i} - ${i + PARALLEL_REQUEST_COUNT} =================`);
     }    
 
     console.log('finished');
@@ -39,37 +41,48 @@ function getHotelPageLinks(batchId) {
 }
 
 function extract10HotelPagesForInfos(hotelPageLinksArr, i, batchId) {
-    let currHotelPageLinksArr = hotelPageLinksArr.slice(i, i + 10);
+    let currHotelPageLinksArr = hotelPageLinksArr.slice(i, i + PARALLEL_REQUEST_COUNT);
 
     let getHotelPgHtmlsPromisesArr = currHotelPageLinksArr.map(hotelPageLink => {
-        return makeRequest(hotelPageLink)
+        return makeRequest(hotelPageLink, true);
     });
 
     const taskQueue = new TaskQueue();
-    
     return new Promise((resolve, reject) => {
-        Promise.all(getHotelPgHtmlsPromisesArr)
-        .then(hotelPgHtmlsArr => {
-            return getHotelInfosObjs(taskQueue, hotelPgHtmlsArr, batchId)
-        })
-        .then((hotelInfosArr) => {
-            return hotelsModel.hotelInfosFromBookingIntoDb(hotelInfosArr);
-        })
-        .then(() => {
-            resolve();
-        })
-        .catch(err => {
-            console.log(err);
-            process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
-            reject(err);
-        });
+        setTimeout(() => {
+            Promise.all(getHotelPgHtmlsPromisesArr)
+            .then(hotelPgHtmlsArr => {
+                return getHotelInfosObjs(taskQueue, hotelPgHtmlsArr, batchId);
+            })
+            .then((hotelInfosArr) => {
+                return hotelsModel.hotelInfosFromBookingIntoDb(hotelInfosArr);
+            })
+            .then(() => {
+                resolve();
+            })
+            .catch(err => {
+                console.log(err);
+                process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
+                reject(err);
+            });
+        }, 1);
     });
 }
 
 function getHotelInfosObjs(taskQueue, hotelPgHtmlsArr, batchId) {
-    let getHotelInfosPromisesArr = hotelPgHtmlsArr.map(hotelPgHtml => {
-        return getHotelInfosObj(taskQueue, hotelPgHtml, batchId);
-    });
+    let getHotelInfosPromisesArr = [];
+    
+    for (let i = 0; i < hotelPgHtmlsArr.length; i++) {
+        let hotelPgHtml = hotelPgHtmlsArr[i];
+
+        if (hotelPgHtml === false) {
+            continue;
+        } else {
+            getHotelInfosPromisesArr.push(
+                getHotelInfosObj(taskQueue, hotelPgHtml, batchId)
+            );
+        }
+    }
 
     return Promise.all(getHotelInfosPromisesArr)
 }

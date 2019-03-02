@@ -21,22 +21,24 @@ module.exports = scrapeController;
 function scrapeController() {
     let batchId = getFormattedDate();
 
-    initiateHotelSearch()
-    .then((firstSearchResPgsLink) => {
-        return extractSearchResultPageLinks(batchId, firstSearchResPgsLink);
-    })
+    extractHotelInfos('2019-03-02_19-50-20')
+    // initiateHotelSearch()
+    // .then((firstSearchResPgsLink) => {
+    //     console.log('firstSearchResPgsLink: ' + firstSearchResPgsLink);
+    //     return extractSearchResultPageLinks(batchId, firstSearchResPgsLink);
+    // })
     // .then(() => {
     //     return extractHotelPagelinks(batchId);
     // })
     // .then(() => {
     //     return extractHotelInfos(batchId);
     // })
-    // .then(() => {
-    //     return extractHotelWebsiteFromGoogle(batchId);
-    // })
-    // .then(() => {
-    //     return extractEmailsFromHotelsWebsites(batchId);    
-    // })
+    .then(() => {
+        return extractHotelWebsiteFromGoogle(batchId);
+    })
+    .then(() => {
+        return extractEmailsFromHotelsWebsites(batchId);    
+    })
     .then(async () => {
         console.log('sending mail');
         await sendMail.result();
@@ -44,14 +46,14 @@ function scrapeController() {
     })
     .catch(async err => {
         console.log(err);
-        // process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
-        // await sendMail.err(err);
+        process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
+        await sendMail.err(err);
     });
 
-    // process.on(CATCHER_ERR_EVENT__TERM, (errStr) => {
-    //     console.log('\ngeneral err: ' + errStr + '\n');
-    //     logGenerealErr(errStr, batchId)
-    // });
+    process.on(CATCHER_ERR_EVENT__TERM, (errStr) => {
+        console.log('\ngeneral err: ' + errStr + '\n');
+        logGenerealErr(errStr, batchId)
+    });
 };
 
 

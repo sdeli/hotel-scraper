@@ -28,4 +28,4 @@ begin
 end //
 delimiter ;
 
-call insertHotelInfos('as2dasd1', 'asdas2d', 'asdas3d', 'asd4asd', 'asdas5d', 'asdas2d');
+#call insertHotelInfos('as2dasd1', 'asdas2d', 'asdas3d', 'asd4asd', 'asdas5d', 'asdas2d');

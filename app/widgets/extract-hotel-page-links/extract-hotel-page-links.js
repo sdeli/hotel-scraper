@@ -7,9 +7,10 @@ const taskQueue = new TaskQueue();
 let extractCurrHotelPageLinksIntoCsvFilePath = `${__dirname}/moduls/extract-curr-hotel-pg-links-into-csv/extract-curr-hotel-pg-links-into-csv.js`;
 
 const PAGI_LINKS_FOLDER__PATH = config.pathes.paginationLinksFolder,
-HOTEL_PAGE_LINKS_CLICKABLE__SEL = config.selectors.searchResPg.hoteSubPageClickable,
-HOTEL_PAGE_LINKS_FOLDER__PATH = config.pathes.hotelSubPageLinks;
-WEBSITES_BASE__URL = config.urls.searchHotelForm,
+    HOTEL_PAGE_LINKS_CLICKABLE__SEL = config.selectors.searchResPg.hoteSubPageClickable,
+    HOTEL_PAGE_LINKS_FOLDER__PATH = config.pathes.hotelSubPageLinks;
+    WEBSITES_BASE__URL = config.urls.searchHotelForm,
+    CATCHER_ERR_EVENT__TERM = config.errors.events[0];
 
 module.exports = extractHotelPagelinks
 
@@ -43,18 +44,16 @@ function getHotelSearchResPgLinksArr(batchId) {
 
 function runExtractionParallel(subProcessPath, taskQueuCb, paramsForSubProc, i) {
     return new Promise((resolve, reject) => {
-        let cbsParams = [resolve, reject, i];
+        let cbsParams = [resolve, i];
         taskQueue.addTask(subProcessPath, taskQueuCb, [paramsForSubProc], cbsParams);
-    })
-    .catch(err => {
-        process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
     });
 }
 
-function taskQueuCb(err, results, resolve, reject, i) {
+function taskQueuCb(err, results, resolve, i) {
     if (err) {
         console.log(err)
-        reject(err);
+        resolve(err);
+        process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
     } else {
         console.log('resolved: ' + i);
         resolve(results)

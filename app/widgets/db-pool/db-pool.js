@@ -25,10 +25,14 @@ const db = (function(){
     function queryProm(sql) {
         return new Promise((resolve, reject) => {
             connPool.query(sql, (err, results, fields) => {
-                if (err) {
+                try {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(results);
+                    }
+                } catch (err) {
                     reject(err);
-                } else {
-                    resolve(results);
                 }
             });
         });

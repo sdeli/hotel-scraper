@@ -1,17 +1,17 @@
 const config = require('config');
 const rp = require('request-promise');
-var reqCount = 0;
-const HEADERS = config.headers.submitSearchReqHeaders;
 
-module.exports = ((link) => {
+const HEADERS = config.headers.submitSearchReqHeaders,
+    CATCHER_ERR_EVENT__TERM = config.errors.events[0];
+
+module.exports = ((link, shouldResolveOnErr = false) => {
     let failedCallCount  = 0;
 
     return new Promise((resolve, reject) => {
-        makeRequest(resolve, reject, link);
+        makeRequest(resolve, reject, link, shouldResolveOnErr);
     });
     
-    function makeRequest(resolve, reject, link) {
-        reqCount++
+    function makeRequest(resolve, reject, link, shouldResolveOnErr) {
         var options = {
             uri: link,
             headers : HEADERS,
@@ -23,7 +23,12 @@ module.exports = ((link) => {
             resolve(response)
         })
         .catch(err => {
-            reject(err)
+            if (shouldResolveOnErr) {
+                resolve(false);
+                process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
+            } else {
+                reject(err);
+            }
         });
     }
 });
