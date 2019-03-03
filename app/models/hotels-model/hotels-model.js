@@ -86,26 +86,7 @@ const hotelsModel = (() => {
         
         return dbPool.queryProm(sql);
     }
-
-    function insertHotelWebsite1() {
-        sql = ''
-        + "call insertHotelInfos('fahqcb6ckjsrznuba', 'MOXY Vienna Airport', 'Austria', 'Schwechat', 'Ausfahrtsstraße 4, 1300 Schwechat, Austria', '2019-03-02_19-50-20');\n"
-        + "call insertHotelInfos('fahqcb6ckjsrznurl', 'OEKOTEL Korneuburg', 'Austria', 'Bisamberg', 'Kaiserallee 31, 2102 Bisamberg, Austria', '2019-03-02_19-50-20');\n"
-        + "call insertHotelInfos('fahqcb6ckjsrznv1c', 'Gasthof Zur Lok', 'Austria', 'Neusiedl am See', 'Bundesschulstraße 2, 7100 Neusiedl am See, Austria', '2019-03-02_19-50-20');\n"
-        + "call insertHotelInfos('fahqcb6ckjsrznv7k', 'SPA Resort Therme Geinberg', 'Austria', 'Geinberg', 'Thermenallee 1, 4943 Geinberg, Austria', '2019-03-02_19-50-20');\n"
-        + "call insertHotelInfos('fahqcb6ckjsrznvgv', 'Johannahof Appartements', 'Austria', 'Kaprun', 'Rosbachstraße 15, 5710 Kaprun, Austria', '2019-03-02_19-50-20');\n"
-        + "call insertHotelInfos('fahqcb6ckjsrznvq7', 'Rogner Bad Blumau', 'Austria', 'Bad Blumau', 'Bad Blumau 100, 8283 Bad Blumau, Austria', '2019-03-02_19-50-20');\n"
-        + "call insertHotelInfos('fahqcb6ckjsrznvyl', 'Chalet Garni Hotel Zimmermann', 'Austria', 'Reith bei Kitzbühel', 'Griesbachweg 48, 6370 Reith bei Kitzbühel, Austria', '2019-03-02_19-50-20');\n"
-        + "call insertHotelInfos('fahqcb6ckjsrznw6z', 'Arion Airport Hotel', 'Austria', 'Schwechat', 'Mühlgasse 30, 2320 Schwechat, Austria', '2019-03-02_19-50-20');\n"
-        + "call insertHotelInfos('fahqcb6ckjsrznwfn', 'Falkensteiner Hotel & Spa Carinzia', 'Austria', 'Tröpolach', 'Tröpolach 156, 9631 Tröpolach, Austria', '2019-03-02_19-50-20');\n"
-        + "call insertHotelInfos('fahqcb6ckjsrznwmx', 'St. Martins Therme & Lodge', 'Austria', 'Frauenkirchen', 'Im Seewinkel 1, 7132 Frauenkirchen, Austria', '2019-03-02_19-50-20');";
-
-
-        return dbPool.queryProm(sql);
-    };
     
-    insertHotelWebsite1();
-
     function getHotelNamesAndAdresses(batchId) {
         batchId = dbPool.escape(batchId);
         

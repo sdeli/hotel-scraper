@@ -21,7 +21,7 @@ module.exports = scrapeController;
 function scrapeController() {
     let batchId = getFormattedDate();
 
-    extractHotelInfos('2019-03-02_19-50-20')
+    extractHotelWebsiteFromGoogle('2019-03-03_12-39-25')
     // initiateHotelSearch()
     // .then((firstSearchResPgsLink) => {
     //     console.log('firstSearchResPgsLink: ' + firstSearchResPgsLink);
@@ -33,11 +33,11 @@ function scrapeController() {
     // .then(() => {
     //     return extractHotelInfos(batchId);
     // })
+    // .then(() => {
+    //     return extractHotelWebsiteFromGoogle(batchId);
+    // })
     .then(() => {
-        return extractHotelWebsiteFromGoogle(batchId);
-    })
-    .then(() => {
-        return extractEmailsFromHotelsWebsites(batchId);    
+        return extractEmailsFromHotelsWebsites('2019-03-03_12-39-25');    
     })
     .then(async () => {
         console.log('sending mail');

@@ -1,10 +1,11 @@
 const puppeteer = require('puppeteer');
 const {getRandomNumber} = require('widgets/scraper-utils');
+const url = require('url');
 
 module.exports = ((config) => {
     const {
         IS_HEADLESS,
-        HOTEL_WEBSITE_LINK_CONT__SEL,
+        HOTEL_WEBSITE_LINK_CONT__SEL
     } = config;
     
     class GoogleScraper {
@@ -95,16 +96,31 @@ module.exports = ((config) => {
     
         await page.setViewport({width: 1285, height: 644});
         await page.setJavaScriptEnabled(false);
-        return {browser, page}
+        return {browser, page};
     }
 
     function trimWebsiteUrl(websiteUrl) {
-        let hasGooglePrefixedTheUrl = /^https:\/\/www\.google\.com\/url\?q=/.test(websiteUrl);
-        if (hasGooglePrefixedTheUrl) {
-            websiteUrl = websiteUrl.replace(/^(https:\/\/www\.google\.com\/url\?q=)(.*)/, '$2');
+        // Google gives the hotels websites link in the link of a google query.. the q parameter will include the link of the hotel
+        let googleQuery = url.parse(websiteUrl, true);
+
+        let isGoogleSearchLink = googleQuery.host.includes('google');
+        if (isGoogleSearchLink) {
+            let hasQueryString = Boolean(googleQuery.query);
+            if (!hasQueryString) throw new Error('not proper url: ' + websiteUrl);
+
+            let queryStringHasPropIncludingwebsiteLink = Boolean(googleQuery.query.q);
+            if (!queryStringHasPropIncludingwebsiteLink) throw new Error('not proper url: ' + websiteUrl);
+
+            let isQueryParamAWebsite = Boolean(url.parse(googleQuery.query.q, true).host)
+            if (isQueryParamAWebsite) {
+                return googleQuery.query.q;
+            } else {
+                throw new Error('not proper url: ' + websiteUrl);
+            }
+        } else {
+            return websiteUrl;
         }
 
-        return websiteUrl;
     }
     
     return GoogleScraper;

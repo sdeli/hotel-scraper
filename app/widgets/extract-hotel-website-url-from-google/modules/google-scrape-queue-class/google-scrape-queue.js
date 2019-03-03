@@ -55,11 +55,13 @@ module.exports = ((config) => {
             console.log(this.executedTaskCount);
             this.executedTaskCount++;
             var websiteUrl = await googleScraper.getHotelWebsite(...keywords, delay)
-
+            
             this.freeGoogleScrapers.push(googleScraper);
             
             let errDuringExtraction = Boolean(websiteUrl.err);
             if (errDuringExtraction) {
+                await this.handleErrDuringExtraction(googleScraper, websiteUrl)
+                console.log('waited 10');
                 this.runCurrTasksCb(websiteUrl.err, taskId, keywords);
                 this.obeserver.emit('execute-task');
                 return;
@@ -74,6 +76,25 @@ module.exports = ((config) => {
             
             this.runCurrTasksCb(false, taskId, websiteUrl);
             this.obeserver.emit('execute-task');
+        }
+
+        handleErrDuringExtraction(googleScraper, websiteUrl) {
+            let shouldResetGoogleScraper = websiteUrl.err.name === "TimeoutError";
+
+            return new Promise(async (resolve) => {
+                if (shouldResetGoogleScraper) {
+                    googleScraper = new GoogleScraper(googleScraper.proxy);
+                    await googleScraper.init();
+                    console.log('resetted google scraper');
+    
+                    setTimeout(function() {
+                        console.log('waited 10000');
+                        resolve();
+                    }, 10000);
+                } else {
+                    resolve()
+                }
+            });
         }
         
         async initGoogleScrapers() {

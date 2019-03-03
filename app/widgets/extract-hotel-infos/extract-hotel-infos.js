@@ -49,23 +49,21 @@ function extract10HotelPagesForInfos(hotelPageLinksArr, i, batchId) {
 
     const taskQueue = new TaskQueue();
     return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            Promise.all(getHotelPgHtmlsPromisesArr)
-            .then(hotelPgHtmlsArr => {
-                return getHotelInfosObjs(taskQueue, hotelPgHtmlsArr, batchId);
-            })
-            .then((hotelInfosArr) => {
-                return hotelsModel.hotelInfosFromBookingIntoDb(hotelInfosArr);
-            })
-            .then(() => {
-                resolve();
-            })
-            .catch(err => {
-                console.log(err);
-                process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
-                reject(err);
-            });
-        }, 1);
+        Promise.all(getHotelPgHtmlsPromisesArr)
+        .then(hotelPgHtmlsArr => {
+            return getHotelInfosObjs(taskQueue, hotelPgHtmlsArr, batchId);
+        })
+        .then((hotelInfosArr) => {
+            return hotelsModel.hotelInfosFromBookingIntoDb(hotelInfosArr);
+        })
+        .then(() => {
+            resolve();
+        })
+        .catch(err => {
+            console.log(err);
+            process.emit(CATCHER_ERR_EVENT__TERM, JSON.stringify(err, null, 2));
+            reject(err);
+        });
     });
 }
 
